@@ -1,1 +1,1130 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta rel="stylesheet" href="/css/index.css">
+    <meta rel="stylesheet" href="/css/general.css">
+    <title>Estruturas de Dados: Referência da Linguagem Python</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      #mobile-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 40;
+      }
+      #mobile-overlay.open { display: block; }
 
+      #mobile-drawer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 300px;
+        background: white;
+        z-index: 50;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+        overflow-y: auto;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      }
+      #mobile-drawer.open { transform: translateX(0); }
+
+      #hamburger-btn {
+        display: none;
+        background: rgba(255,255,255,0.1);
+        padding: 8px 12px;
+        border-radius: 6px;
+        margin-right: 15px;
+      }
+
+      @media (max-width: 767px) {
+        #hamburger-btn { display: block; }
+        .header-container { flex-direction: row !important; justify-content: space-between !important; }
+        .header-title-wrapper { margin-bottom: 0 !important; }
+        .search-wrapper { width: auto !important; }
+        .search-input { width: 140px !important; }
+      }
+
+      .dropdown-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+      .dropdown-content.open { max-height: 1000px; }
+      .rotate-90 { transform: rotate(90deg); }
+      .code-block {
+        font-family: "Courier New", monospace;
+        background-color: #2d2d2d;
+        color: #f8f8f2;
+        border-radius: 6px;
+        padding: 1rem;
+        overflow-x: auto;
+      }
+      .keyword  { color: #569cd6; }
+      .string   { color: #ce9178; }
+      .comment  { color: #6a9955; font-style: italic; }
+      .function { color: #dcdcaa; }
+      .type     { color: #4ec9b0; }
+      .topbar { background-color: #14532d; }
+      .brand-header { background: linear-gradient(180deg, #15803d 0%, #16a34a 100%); }
+      .brand-logo { height: 38px; width: auto; filter: brightness(0) invert(1); }
+    </style>
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <div id="mobile-overlay"></div>
+    <div id="mobile-drawer">
+      <div class="p-4 border-b flex justify-between items-center bg-green-700 text-white">
+        <h2 class="text-xl font-bold">Sumário</h2>
+        <button id="close-drawer" class="text-2xl">&times;</button>
+      </div>
+      <div id="mobile-nav-container" class="p-4">
+      </div>
+    </div>
+
+    <div class="topbar text-green-100 text-xs">
+      <div class="container mx-auto px-4 py-1.5 flex items-center justify-between">
+        <span class="hidden sm:inline">IFSULDEMINAS &middot; Campus Poços de Caldas</span>
+        <a href="https://suporte-informatica.vercel.app/" class="hover:text-white flex items-center">
+          <i class="fas fa-arrow-left mr-1"></i> Portal de Aprendizado
+        </a>
+      </div>
+    </div>
+    <header class="brand-header text-white shadow-lg">
+      <div
+        class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center header-container"
+      >
+        <div class="flex items-center mb-4 md:mb-0 header-title-wrapper">
+          <button id="hamburger-btn" class="text-white">
+            <i class="fas fa-bars"></i>
+          </button>
+          <i class="fas fa-code text-3xl mr-3"></i>
+          <h1 class="text-2xl font-bold">Referência da Linguagem Python</h1>
+        </div>
+        <div class="flex items-center space-x-4 search-wrapper">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="Pesquisar"
+              class="search-input px-4 py-2 rounded-full bg-green-600 text-white placeholder-green-300 focus:outline-none focus:ring-2 focus:ring-green-400 w-64"
+            />
+            <button
+              class="absolute right-3 top-2 text-green-300 hover:text-white"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+            <div
+              id="search-results"
+              class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg z-50 hidden"
+            ></div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <main class="flex-1">
+      <div class="flex flex-1 container mx-auto px-4 py-8">
+        <div
+          id="sidebar"
+          class="w-72 shrink-0 bg-white rounded-lg shadow-md p-4 mr-8 hidden md:block h-fit sticky top-8"
+        >
+          <div class="p-4 border-b border-gray-200">
+            <h1 class="text-2xl font-bold mb-4 text-green-700">Sumário</h1>
+          </div>
+          <nav id="main-nav">
+            <div class="mb-4 mt-4">
+              <a
+                href="#introducao"
+                class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all"
+                data-section="introducao"
+                data-explanation="Introdução à linguagem Python e seus conceitos básicos."
+              >
+                <i class="fas fa-play mr-2 ml-2"></i>
+                <span class="flex items-center mr-12"> Introdução </span>
+              </a>
+            </div>
+
+            <div class="mb-4 relative">
+              <a
+                href="#tipos"
+                class="dropdown-btn flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all"
+                data-section="tipos"
+                data-explanation="Tipos de dados em Python."
+              >
+                <i class="fas fa-laptop-code mr-2"></i>
+                <span class="flex items-center"> Tipos de Dados </span>
+                <i
+                  class="fas fa-chevron-right absolute end-4 transition-all transform"
+                ></i>
+              </a>
+              <div id="dd-tipos" class="dropdown-content pl-6 mt-1">
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="tipo-int" data-explanation="Tipo inteiro em Python">int</a>
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="tipo-float" data-explanation="Tipo ponto flutuante em Python">float</a>
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="tipo-str" data-explanation="Tipo string em Python">str</a>
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="tipo-bool" data-explanation="Tipo booleano em Python">bool</a>
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="tipo-none" data-explanation="Tipo None em Python">None</a>
+              </div>
+            </div>
+
+            <div class="mb-4 relative">
+              <a
+                href="#estruturas"
+                class="dropdown-btn flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all"
+                data-section="estruturas"
+                data-explanation="Estruturas de dados nativas do Python."
+              >
+                <i class="fas fa-database mr-2"></i>
+                <span class="flex items-center"> Estruturas de Dados </span>
+                <i
+                  class="fas fa-chevron-right absolute end-4 transition-all transform"
+                ></i>
+              </a>
+              <div id="dd-estruturas" class="dropdown-content pl-6 mt-1">
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="lista" data-explanation="Listas em Python">list</a>
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="tupla" data-explanation="Tuplas em Python">tuple</a>
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="dicionario" data-explanation="Dicionários em Python">dict</a>
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="conjunto" data-explanation="Conjuntos em Python">set</a>
+              </div>
+            </div>
+
+            <div class="mb-4 relative">
+              <a
+                href="#entrada-saida"
+                class="dropdown-btn flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all"
+                data-section="entrada-saida"
+                data-explanation="Funções de entrada e saída em Python."
+              >
+                <i class="fa fa-exchange mr-2"></i>
+                <span class="flex items-center"> Entrada e Saída </span>
+                <i
+                  class="fas fa-chevron-right absolute end-4 transition-all transform"
+                ></i>
+              </a>
+              <div id="dd-io" class="dropdown-content pl-6 mt-1">
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="print" data-explanation="Função print em Python">print()</a>
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="input" data-explanation="Função input em Python">input()</a>
+              </div>
+            </div>
+
+            <div class="mb-4 relative">
+              <a
+                href="#controle_fluxo"
+                class="dropdown-btn flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all"
+                data-section="controle-fluxo"
+                data-explanation="Estruturas de controle de fluxo em Python."
+              >
+                <i class="fas fa-code-branch mr-2"></i>
+                <span class="flex items-center"> Controle de Fluxo </span>
+                <i
+                  class="fas fa-chevron-right absolute end-4 transition-all transform"
+                ></i>
+              </a>
+              <div id="dd-controle" class="dropdown-content pl-6 mt-1">
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="if-elif" data-explanation="Estrutura if/elif/else em Python">if, elif, else</a>
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="for" data-explanation="Laço for em Python">for</a>
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="while" data-explanation="Laço while em Python">while</a>
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="match" data-explanation="Estrutura match/case em Python">match / case</a>
+              </div>
+            </div>
+
+            <div class="mb-4 relative">
+              <a
+                href="#funcoes"
+                class="dropdown-btn flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all"
+                data-section="funcoes"
+                data-explanation="Definição e uso de funções em Python."
+              >
+                <i class="fas fa-cogs mr-2"></i>
+                <span class="flex items-center"> Funções </span>
+                <i
+                  class="fas fa-chevron-right absolute end-4 transition-all transform"
+                ></i>
+              </a>
+              <div id="dd-funcoes" class="dropdown-content pl-6 mt-1">
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="def" data-explanation="Definição de funções">Definição</a>
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="parametros" data-explanation="Parâmetros e argumentos">Parâmetros</a>
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="lambda" data-explanation="Funções lambda em Python">Lambda</a>
+                <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="retorno" data-explanation="Retorno de valores">Retorno</a>
+              </div>
+            </div>
+            <div class="mt-8 border-t pt-4">
+              <h3 class="font-bold mb-2">Recursos Úteis</h3>
+              <ul class="space-y-2">
+                <li>
+                  <a
+                    href="#"
+                    class="nav-link text-sm text-green-600 hover:underline flex items-center"
+                    data-section="documentacao"
+                    data-explanation="Links para leitura recomendada e recursos adicionais."
+                    ><i class="fas fa-external-link-alt mr-2 text-xs"></i>
+                    Leitura Recomendada</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    class="nav-link text-sm text-green-600 hover:underline flex items-center"
+                    data-section="tutoriais"
+                    data-explanation="Links para tutoriais e guias práticos."
+                    ><i class="fas fa-book-open mr-2 text-xs"></i> Tutoriais</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+
+        <div id="content" class="flex flex-col flex-1">
+          <div id="explanation">
+          </div>
+
+          <footer class="mt-12 border-t-2 border-green-100 pt-8 text-center text-gray-600 text-sm">
+            <p>
+              © 2026 Referência da Linguagem Python. Todos os direitos reservados.
+            </p>
+            <p class="mt-2">Este site é apenas para fins educacionais.</p>
+            <p class="mt-3 font-semibold text-green-700">Lucas Fernandes &amp; David Delgado</p>
+            <div class="flex justify-center space-x-4 mt-3">
+              <a
+                href="https://github.com/"
+                target="_blank"
+                class="text-green-600 hover:text-green-800"
+                ><i class="fab fa-github"></i> GitHub</a
+              >
+            </div>
+            <p class="mt-4 text-xs text-gray-400">IFSULDEMINAS &middot; Campus Poços de Caldas</p>
+          </footer>
+        </div>
+      </div>
+    </main>
+
+    <template id="tpl-introducao">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-play-circle text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">Introdução ao Python</h2>
+        </div>
+        <p class="text-gray-700 mb-4">
+          Python é uma linguagem de programação de alto nível, interpretada, de tipagem dinâmica e forte, criada por <strong>Guido van Rossum</strong> e lançada em 1991. É amplamente utilizada em ciência de dados, automação, desenvolvimento web, inteligência artificial e ensino de programação. Além disso, para competições de programação, é a melhor opção depois do C++.
+        </p>
+        <p class="text-gray-700 mb-4">
+          Um dos princípios centrais do Python é a legibilidade do código. 
+        </p>
+        <div class="code-block mb-4">
+          <pre><span class="comment"># Meu primeiro programa em Python</span>
+<span class="function">print</span>(<span class="string">"Olá, mundo!"</span>)
+
+<span class="comment"># Variáveis não precisam de declaração de tipo</span>
+nome = <span class="string">"Python"</span>
+versao = <span class="keyword">3</span>.<span class="keyword">12</span>
+<span class="function">print</span>(<span class="string">f"Bem-vindo ao {nome} {versao}!"</span>)</pre>
+        </div>
+        <div class="bg-green-50 border-l-4 border-green-500 p-4 mt-4">
+          <div class="flex">
+            <i class="fas fa-lightbulb text-green-500 mr-3 mt-1"></i>
+            <div>
+              <h4 class="text-sm font-medium text-green-800">Características principais</h4>
+              <ul class="mt-1 text-sm text-green-700 list-disc list-inside">
+                <li>Indentação obrigatória para delimitar blocos de código</li>
+                <li>Tipagem dinâmica --> o tipo é inferido em tempo de execução</li>
+                <li>Interpretada --> executada linha a linha pelo interpretador</li>
+                <li>Multiplataforma --> roda em Windows, Linux e macOS</li>
+                <li>Vasta biblioteca padrão e ecossistema de pacotes</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-tipos">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-laptop-code text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">Tipos de Dados</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Python possui diversos tipos de dados integrados. Os mais comuns são números, strings e booleanos.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">int</strong> inteiros: <code>10</code>, <code>-5</code></div>
+          <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">float</strong> ponto flutuante: <code>3.14</code>, <code>-0.01</code></div>
+          <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">str</strong> cadeias de caracteres: <code>"Olá"</code></div>
+          <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">bool</strong> valores lógicos: <code>True</code>, <code>False</code></div>
+          <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">NoneType</strong> ausência de valor: <code>None</code></div>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-tipo-int">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-hashtag text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">int --> Inteiros</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Inteiros em Python têm precisão arbitrária (limitada apenas pela memória). Podem ser representados em decimal, binário, octal ou hexadecimal.</p>
+        <div class="code-block mb-4">
+          <pre>x = <span class="keyword">10</span>
+y = -<span class="keyword">42</span>
+grande = <span class="keyword">10</span>**<span class="keyword">100</span>  <span class="comment"># sem overflow!</span>
+
+<span class="comment"># Operações</span>
+soma = x + y
+div_inteira = <span class="keyword">10</span> // <span class="keyword">3</span>  <span class="comment"># 3</span>
+resto = <span class="keyword">10</span> % <span class="keyword">3</span>        <span class="comment"># 1</span></pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-tipo-float">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-dot-circle text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">float --> Ponto Flutuante</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Números reais seguem o padrão de 64 bits. Podem usar notação científica com <code>e</code>.</p>
+        <div class="code-block mb-4">
+          <pre>pi = <span class="keyword">3.14159</span>
+gravidade = <span class="keyword">9.8</span>
+nano = <span class="keyword">1e-9</span>
+
+<span class="comment"># Divisão sempre retorna float em Python 3</span>
+<span class="function">print</span>(<span class="keyword">10</span> / <span class="keyword">2</span>)  <span class="comment"># 5.0</span></pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-tipo-str">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-font text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">str --> Strings</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Strings são sequências <strong>imutáveis</strong> de caracteres Unicode. Podem ser criadas com aspas simples, duplas ou triplas (para múltiplas linhas).</p>
+        <div class="code-block mb-4">
+          <pre>s = <span class="string">"Python"</span>
+multilinha = <span class="string">"""Esta é uma string
+de várias linhas."""</span>
+
+<span class="comment"># Métodos comuns</span>
+<span class="function">print</span>(s.upper())      <span class="comment"># PYTHON</span>
+<span class="function">print</span>(s.replace(<span class="string">"P"</span>, <span class="string">"J"</span>)) <span class="comment"># Jython</span>
+<span class="function">print</span>(s[<span class="keyword">0</span>:<span class="keyword">2</span>])         <span class="comment"># Py (slicing)</span></pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-tipo-bool">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-toggle-on text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">bool --> Booleanos</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Representam valores lógicos: <code>True</code> ou <code>False</code>. Internamente, <code>True</code> vale 1 e <code>False</code> vale 0.</p>
+        <div class="code-block mb-4">
+          <pre>ativo = <span class="keyword">True</span>
+logado = <span class="keyword">False</span>
+
+<span class="comment"># Operadores</span>
+<span class="function">print</span>(ativo <span class="keyword">and</span> logado) <span class="comment"># False</span>
+<span class="function">print</span>(ativo <span class="keyword">or</span> logado)  <span class="comment"># True</span>
+<span class="function">print</span>(<span class="keyword">not</span> ativo)        <span class="comment"># False</span></pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-tipo-none">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-ban text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">None --> Nulo</h2>
+        </div>
+        <p class="text-gray-700 mb-4">O <code>None</code> é um objeto especial que representa a ausência de valor. É o "null" do Python.</p>
+        <div class="code-block mb-4">
+          <pre>valor = <span class="keyword">None</span>
+
+<span class="keyword">if</span> valor <span class="keyword">is</span> <span class="keyword">None</span>:
+    <span class="function">print</span>(<span class="string">"Nada aqui"</span>)</pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-estruturas">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-database text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">Estruturas de Dados</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Python oferece quatro estruturas de dados nativas poderosas para organizar coleções de itens.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+          <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">list</strong> ordenada e mutável: <code>[1, 2, 2]</code></div>
+          <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">tuple</strong> ordenada e imutável: <code>(1, 2, 2)</code></div>
+          <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">dict</strong> chave-valor (mapeamento): <code>{"id": 1}</code></div>
+          <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">set</strong> coleção não ordenada de itens únicos: <code>{1, 2}</code></div>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-lista">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-list-ol text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">list --> Listas</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Listas são coleções <strong>ordenadas</strong> e <strong>mutáveis</strong>. Permitem itens duplicados e de tipos diferentes.</p>
+        <div class="code-block mb-4">
+          <pre>frutas = [<span class="string">"maçã"</span>, <span class="string">"banana"</span>, <span class="string">"uva"</span>]
+numeros = [<span class="keyword">1</span>, <span class="keyword">2</span>, <span class="keyword">3</span>]
+mista = [<span class="keyword">1</span>, <span class="string">"texto"</span>, <span class="keyword">True</span>]
+
+<span class="comment"># Métodos</span>
+frutas.append(<span class="string">"laranja"</span>)
+frutas.insert(<span class="keyword">0</span>, <span class="string">"morango"</span>)
+frutas.pop()           <span class="comment"># remove o último</span>
+frutas.sort()          <span class="comment"># ordena</span>
+
+<span class="comment"># List Comprehension (forma pythônica)</span>
+quadrados = [x**<span class="keyword">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> <span class="function">range</span>(<span class="keyword">10</span>)]</pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-tupla">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-lock text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">tuple --> Tuplas</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Tuplas são coleções <strong>ordenadas</strong> e <strong>imutáveis</strong>. São mais rápidas que listas e seguras para dados que não devem mudar.</p>
+        <div class="code-block mb-4">
+          <pre>ponto = (<span class="keyword">10</span>, <span class="keyword">20</span>)
+cores = (<span class="string">"vermelho"</span>, <span class="string">"verde"</span>, <span class="string">"azul"</span>)
+
+<span class="comment"># Desempacotamento (Unpacking)</span>
+x, y = ponto
+
+<span class="comment"># Tupla de um único elemento (precisa da vírgula)</span>
+sozinho = (<span class="keyword">42</span>,)</pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-dicionario">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-book text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">dict --> Dicionários</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Dicionários armazenam pares <strong>chave → valor</strong>. A partir do Python 3.7, mantêm a ordem de inserção. As chaves devem ser imutáveis (strings, números, tuplas).</p>
+        <div class="code-block mb-4">
+          <pre>pessoa = {
+    <span class="string">"nome"</span>: <span class="string">"David"</span>,
+    <span class="keyword">"idade"</span>: <span class="keyword">25</span>,
+    <span class="string">"cidade"</span>: <span class="string">"São Paulo"</span>
+}
+
+<span class="comment"># Acesso</span>
+<span class="function">print</span>(pessoa[<span class="string">"nome"</span>])           <span class="comment"># David</span>
+<span class="function">print</span>(pessoa.<span class="function">get</span>(<span class="string">"email"</span>, <span class="string">"N/A"</span>)) 
+
+<span class="comment"># Modificação</span>
+pessoa[<span class="string">"idade"</span>] = <span class="keyword">26</span>
+pessoa[<span class="string">"email"</span>] = <span class="string">"david@gmail.com"</span>
+
+<span class="comment"># Iteração</span>
+<span class="keyword">for</span> chave, valor <span class="keyword">in</span> pessoa.<span class="function">items</span>():
+    <span class="function">print</span>(<span class="string">f"{chave}: {valor}"</span>)
+
+<span class="comment"># Dict comprehension</span>
+quadrados = {x: x**<span class="keyword">2</span> <span class="keyword">for</span> x <span class="keyword">in</span> <span class="function">range</span>(<span class="keyword">5</span>)}</pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-conjunto">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-circle-notch text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">set --> Conjuntos</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Conjuntos armazenam elementos <strong>únicos</strong> e sem ordem definida. São ideais para eliminar duplicatas e realizar operações de teoria dos conjuntos.</p>
+        <div class="code-block mb-4">
+          <pre>a = {<span class="keyword">1</span>, <span class="keyword">2</span>, <span class="keyword">3</span>, <span class="keyword">4</span>}
+b = {<span class="keyword">3</span>, <span class="keyword">4</span>, <span class="keyword">5</span>, <span class="keyword">6</span>}
+
+<span class="comment"># Operações de conjunto</span>
+<span class="function">print</span>(a | b)     <span class="comment"># união        → {1,2,3,4,5,6}</span>
+<span class="function">print</span>(a & b)     <span class="comment"># interseção   → {3,4}</span>
+<span class="function">print</span>(a - b)     <span class="comment"># diferença    → {1,2}</span>
+<span class="function">print</span>(a ^ b)     <span class="comment"># diferença simétrica → {1,2,5,6}</span>
+
+<span class="comment"># Remover duplicatas de uma lista</span>
+numeros = [<span class="keyword">1</span>, <span class="keyword">2</span>, <span class="keyword">2</span>, <span class="keyword">3</span>, <span class="keyword">3</span>, <span class="keyword">3</span>]
+unicos = <span class="function">list</span>(<span class="function">set</span>(numeros))
+<span class="function">print</span>(unicos)    <span class="comment"># [1, 2, 3] (ordem pode variar)</span></pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-entrada-saida">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-exchange-alt text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">Entrada e Saída</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Python usa <code>print()</code> para saída no terminal e <code>input()</code> para leitura de dados do usuário.</p>
+        <div class="code-block">
+          <pre><span class="comment"># Saída básica</span>
+<span class="function">print</span>(<span class="string">"Olá!"</span>)
+<span class="function">print</span>(<span class="string">"a"</span>, <span class="string">"b"</span>, sep=<span class="string">"-"</span>)    <span class="comment"># a-b</span>
+<span class="function">print</span>(<span class="string">"linha"</span>, end=<span class="string">""</span>)      <span class="comment"># sem quebra de linha</span>
+
+<span class="comment"># Entrada do usuário</span>
+nome = <span class="function">input</span>(<span class="string">"Seu nome: "</span>)
+<span class="function">print</span>(<span class="string">f"Olá, {nome}!"</span>)</pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-print">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-terminal text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">print()</h2>
+        </div>
+        <p class="text-gray-700 mb-4">A função <code>print()</code> exibe valores no terminal. Aceita múltiplos argumentos e parâmetros opcionais <code>sep</code>, <code>end</code> e <code>file</code>.</p>
+        <div class="code-block mb-4">
+          <pre><span class="comment"># Formas de formatar saída</span>
+nome = <span class="string">"Lucas"</span>
+nota = <span class="keyword">9.75</span>
+
+<span class="comment"># f-string </span>
+<span class="function">print</span>(<span class="string">f"{nome} tirou {nota:.1f}"</span>)
+
+<span class="comment"># .format()</span>
+<span class="function">print</span>(<span class="string">"{} tirou {:.1f}"</span>.<span class="function">format</span>(nome, nota))
+
+<span class="comment"># % é o legado, ou seja, o especificador de qual tipo de variável vai ser trabalhado.</span>
+<span class="function">print</span>(<span class="string">"%s tirou %.1f"</span> % (nome, nota))
+
+<span class="comment"># sep e end</span>
+<span class="function">print</span>(<span class="keyword">1</span>, <span class="keyword">2</span>, <span class="keyword">3</span>, sep=<span class="string">" | "</span>)   <span class="comment"># 1 | 2 | 3</span>
+<span class="function">print</span>(<span class="string">"sem newline"</span>, end=<span class="string">" → "</span>)</pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-input">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-keyboard text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">input()</h2>
+        </div>
+        <p class="text-gray-700 mb-4"><code>input()</code> Lê uma linha da entrada padrão e sempre retorna uma <strong>string</strong>. Para obter outros tipos, é necessário converter explicitamente.</p>
+        <div class="code-block mb-4">
+          <pre><span class="comment"># Leitura simples</span>
+nome = <span class="function">input</span>(<span class="string">"Digite seu nome: "</span>)
+
+<span class="comment"># Convertendo para inteiro</span>
+idade = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Digite sua idade: "</span>))
+
+<span class="comment"># Convertendo para float</span>
+altura = <span class="function">float</span>(<span class="function">input</span>(<span class="string">"Digite sua altura: "</span>))
+
+<span class="comment"># Lendo vários valores na mesma linha</span>
+a, b = <span class="function">map</span>(<span class="function">int</span>, <span class="function">input</span>(<span class="string">"Dois números: "</span>).<span class="function">split</span>())
+
+<span class="comment"># Com tratamento de erros</span>
+<span class="keyword">try</span>:
+    n = <span class="function">int</span>(<span class="function">input</span>(<span class="string">"Número inteiro: "</span>))
+<span class="keyword">except</span> ValueError:
+    <span class="function">print</span>(<span class="string">"Entrada inválida!"</span>)</pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-controle-fluxo">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-code-branch text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">Controle de Fluxo</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Python utiliza <code>if/elif/else</code> para condicionais, <code>for</code> e <code>while</code> para laços, e o moderno <code>match/case</code> para correspondência de padrões.</p>
+        <div class="bg-green-50 border-l-4 border-green-500 p-4">
+          <p class="text-sm text-green-700">Diferente de C, Python <strong>não usa chaves</strong> para delimitar blocos, ele usa <strong>indentação</strong> (geralmente 4 espaços).</p>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-if-elif">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-question-circle text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">if, elif, else</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Estrutura condicional do Python. Use <code>elif</code> para múltiplas condições (equivalente ao <code>else if</code> de outras linguagens). Não há parênteses obrigatórios na condição.</p>
+        <div class="code-block mb-4">
+          <pre>nota = <span class="keyword">7.5</span>
+
+<span class="keyword">if</span> nota >= <span class="keyword">9</span>:
+    <span class="function">print</span>(<span class="string">"A"</span>)
+<span class="keyword">elif</span> nota >= <span class="keyword">7</span>:
+    <span class="function">print</span>(<span class="string">"B"</span>)
+<span class="keyword">elif</span> nota >= <span class="keyword">5</span>:
+    <span class="function">print</span>(<span class="string">"C"</span>)
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"Reprovado"</span>)
+
+<span class="comment"># Expressão condicional (ternário). O ternário é como um if simplificado e tem a mesma função.</span>
+status = <span class="string">"aprovado"</span> <span class="keyword">if</span> nota >= <span class="keyword">5</span> <span class="keyword">else</span> <span class="string">"reprovado"</span>
+
+<span class="comment"># Operadores lógicos</span>
+x = <span class="keyword">15</span>
+<span class="keyword">if</span> x > <span class="keyword">0</span> <span class="keyword">and</span> x % <span class="keyword">2</span> == <span class="keyword">1</span>:
+    <span class="function">print</span>(<span class="string">"positivo e ímpar"</span>)</pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-for">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-redo text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">for</h2>
+        </div>
+        <p class="text-gray-700 mb-4">O laço <code>for</code> do Python itera sobre qualquer objeto iterável (listas, strings, ranges, dicionários…). Use <code>range()</code> para laços baseados em contagem.</p>
+        <div class="code-block mb-4">
+          <pre><span class="comment"># Iterando sobre lista</span>
+<span class="keyword">for</span> fruta <span class="keyword">in</span> [<span class="string">"maçã"</span>, <span class="string">"banana"</span>, <span class="string">"uva"</span>]:
+    <span class="function">print</span>(fruta)
+
+<span class="comment"># Com range</span>
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="keyword">5</span>):         <span class="comment"># 0 a 4</span>
+    <span class="function">print</span>(i)
+
+<span class="keyword">for</span> i <span class="keyword">in</span> <span class="function">range</span>(<span class="keyword">1</span>, <span class="keyword">10</span>, <span class="keyword">2</span>): <span class="comment"># 1,3,5,7,9</span>
+    <span class="function">print</span>(i)
+
+<span class="comment"># enumerate — índice + valor</span>
+<span class="keyword">for</span> i, v <span class="keyword">in</span> <span class="function">enumerate</span>([<span class="string">"a"</span>, <span class="string">"b"</span>, <span class="string">"c"</span>]):
+    <span class="function">print</span>(i, v)
+
+<span class="comment"># break e continue</span>
+<span class="keyword">for</span> n <span class="keyword">in</span> <span class="function">range</span>(<span class="keyword">10</span>):
+    <span class="keyword">if</span> n == <span class="keyword">3</span>: <span class="keyword">continue</span>  <span class="comment"># pula o 3</span>
+    <span class="keyword">if</span> n == <span class="keyword">7</span>: <span class="keyword">break</span>    <span class="comment"># para no 7</span>
+    <span class="function">print</span>(n)</pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-while">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-sync-alt text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">while</h2>
+        </div>
+        <p class="text-gray-700 mb-4">O laço <code>while</code> repete um bloco enquanto a condição for verdadeira. Python também suporta a cláusula <code>else</code> no <code>while</code>, executada quando a condição se torna falsa (sem <code>break</code>).</p>
+        <div class="code-block mb-4">
+          <pre>contador = <span class="keyword">0</span>
+
+<span class="keyword">while</span> contador < <span class="keyword">5</span>:
+    <span class="function">print</span>(contador)
+    contador += <span class="keyword">1</span>
+
+<span class="comment"># Laço infinito com break</span>
+<span class="keyword">while</span> <span class="keyword">True</span>:
+    entrada = <span class="function">input</span>(<span class="string">"Digite 'sair': "</span>)
+    <span class="keyword">if</span> entrada == <span class="string">"sair"</span>:
+        <span class="keyword">break</span>
+
+<span class="comment"># while com else</span>
+n = <span class="keyword">0</span>
+<span class="keyword">while</span> n < <span class="keyword">3</span>:
+    <span class="function">print</span>(n)
+    n += <span class="keyword">1</span>
+<span class="keyword">else</span>:
+    <span class="function">print</span>(<span class="string">"Laço concluído"</span>)</pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-match">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-sitemap text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">match / case (Python 3.10+)</h2>
+        </div>
+        <p class="text-gray-700 mb-4"><code>match/case</code> é o <em>structural pattern matching</em> do Python, muito mais poderoso que o <code>switch</code> de outras linguagens. Permite comparar estruturas, tuplas, dicionários e mais.</p>
+        <div class="code-block mb-4">
+          <pre>comando = <span class="string">"sair"</span>
+
+<span class="keyword">match</span> comando:
+    <span class="keyword">case</span> <span class="string">"iniciar"</span>:
+        <span class="function">print</span>(<span class="string">"Iniciando..."</span>)
+    <span class="keyword">case</span> <span class="string">"pausar"</span>:
+        <span class="function">print</span>(<span class="string">"Pausado."</span>)
+    <span class="keyword">case</span> <span class="string">"sair"</span>:
+        <span class="function">print</span>(<span class="string">"Encerrando."</span>)
+    <span class="keyword">case</span> _:
+        <span class="function">print</span>(<span class="string">"Comando desconhecido"</span>)
+
+<span class="comment"># Match com tuplas</span>
+ponto = (<span class="keyword">0</span>, <span class="keyword">5</span>)
+<span class="keyword">match</span> ponto:
+    <span class="keyword">case</span> (<span class="keyword">0</span>, <span class="keyword">0</span>):
+        <span class="function">print</span>(<span class="string">"Origem"</span>)
+    <span class="keyword">case</span> (<span class="keyword">0</span>, y):
+        <span class="function">print</span>(<span class="string">f"Eixo Y em {y}"</span>)
+    <span class="keyword">case</span> (x, <span class="keyword">0</span>):
+        <span class="function">print</span>(<span class="string">f"Eixo X em {x}"</span>)
+    <span class="keyword">case</span> (x, y):
+        <span class="function">print</span>(<span class="string)f"Ponto em ({x}, {y})"</span>)</pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-funcoes">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-cogs text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">Funções</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Funções são definidas com a palavra-chave <code>def</code>. Python suporta parâmetros padrão, <code>*args</code>, <code>**kwargs</code>, anotações de tipo e funções de primeira classe.</p>
+        <div class="code-block">
+          <pre><span class="keyword">def</span> <span class="function">saudacao</span>(nome, cumprimento=<span class="string">"Olá"</span>):
+    <span class="keyword">return</span> <span class="string">f"{cumprimento}, {nome}!"</span>
+
+<span class="function">print</span>(<span class="function">saudacao</span>(<span class="string">"Lucas"</span>))
+<span class="function">print</span>(<span class="function">saudacao</span>(<span class="string">"David"</span>, <span class="string">"Oi"</span>))</pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-def">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-plus-circle text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">Definição de Funções</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Use <code>def nome(parâmetros):</code> para definir uma função. O corpo deve ser indentado. A <em>docstring</em> (string logo após o <code>def</code>) documenta a função.</p>
+        <div class="code-block mb-4">
+          <pre><span class="keyword">def</span> <span class="function">somar</span>(a, b):
+    <span class="string">"""Retorna a soma de dois números."""</span>
+    <span class="keyword">return</span> a + b
+
+<span class="comment"># Anotações de tipo (type hints)</span>
+<span class="keyword">def</span> <span class="function">potencia</span>(base: <span class="type">float</span>, exp: <span class="type">int</span>) -> <span class="type">float</span>:
+    <span class="keyword">return</span> base ** exp
+
+resultado = <span class="function">somar</span>(<span class="keyword">3</span>, <span class="keyword">4</span>)
+<span class="function">print</span>(resultado)    <span class="comment"># 7</span>
+
+<span class="comment"># Funções são objetos de primeira classe</span>
+operacao = somar
+<span class="function">print</span>(<span class="function">operacao</span>(<span class="keyword">10</span>, <span class="keyword">5</span>))  <span class="comment"># 15</span></pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-parametros">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-sliders-h text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">Parâmetros e Argumentos</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Python oferece grande flexibilidade na passagem de argumentos: parâmetros padrão, keyword arguments, <code>*args</code> (variádico posicional) e <code>**kwargs</code> (variádico nomeado).</p>
+        <div class="code-block mb-4">
+          <pre><span class="comment"># Valor padrão</span>
+<span class="keyword">def</span> <span class="function">conectar</span>(host, porta=<span class="keyword">8080</span>):
+    <span class="function">print</span>(<span class="string)f"Conectando a {host}:{porta}"</span>)
+
+<span class="function">conectar</span>(<span class="string">"localhost"</span>)          <span class="comment"># usa porta=8080</span>
+<span class="function">conectar</span>(<span class="string">"api.exemplo.com"</span>, <span class="keyword">443</span>)
+
+<span class="comment"># *args — variádico posicional</span>
+<span class="keyword">def</span> <span class="function">somar_tudo</span>(*nums):
+    <span class="keyword">return</span> <span class="function">sum</span>(nums)
+
+<span class="function">print</span>(<span class="function">somar_tudo</span>(<span class="keyword">1</span>, <span class="keyword">2</span>, <span class="keyword">3</span>, <span class="keyword">4</span>))   <span class="comment"># 10</span>
+
+<span class="comment"># **kwargs — variádico nomeado</span>
+<span class="keyword">def</span> <span class="function">info</span>(**dados):
+    <span class="keyword">for</span> k, v <span class="keyword">in</span> dados.<span class="function">items</span>():
+        <span class="function">print</span>(<span class="string)f"{k} = {v}"</span>)
+
+<span class="function">info</span>(nome=<span class="string">"Lucas"</span>, cidade=<span class="string">"BH"</span>)</pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-lambda">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-bolt text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">Funções Lambda</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Funções <code>lambda</code> são funções anônimas de uma linha. Úteis quando se precisa de uma função simples como argumento (ex: <code>sorted</code>, <code>map</code>, <code>filter</code>).</p>
+        <div class="code-block mb-4">
+          <pre><span class="comment"># Lambda básica</span>
+dobro = <span class="keyword">lambda</span> x: x * <span class="keyword">2</span>
+<span class="function">print</span>(<span class="function">dobro</span>(<span class="keyword">5</span>))          <span class="comment"># 10</span>
+
+<span class="comment"># Como argumento de sorted</span>
+pessoas = [(<span class="string">"Lucas"</span>, <span class="keyword">25</span>), (<span class="string">"Ana"</span>, <span class="keyword">30</span>), (<span class="string">"Bia"</span>, <span class="keyword">20</span>)]
+ordenado = <span class="function">sorted</span>(pessoas, key=<span class="keyword">lambda</span> p: p[<span class="keyword">1</span>])
+<span class="function">print</span>(ordenado)  <span class="comment"># ordena por idade</span>
+
+<span class="comment"># map e filter</span>
+nums = [<span class="keyword">1</span>, <span class="keyword">2</span>, <span class="keyword">3</span>, <span class="keyword">4</span>, <span class="keyword">5</span>]
+pares     = <span class="function">list</span>(<span class="function">filter</span>(<span class="keyword">lambda</span> x: x % <span class="keyword">2</span> == <span class="keyword">0</span>, nums))
+quadrados = <span class="function">list</span>(<span class="function">map</span>(<span class="keyword">lambda</span> x: x**<span class="keyword">2</span>, nums))
+<span class="function">print</span>(pares)      <span class="comment"># [2, 4]</span>
+<span class="function">print</span>(quadrados)  <span class="comment"># [1, 4, 9, 16, 25]</span></pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-retorno">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-reply text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">Retorno de Valores</h2>
+        </div>
+        <p class="text-gray-700 mb-4">Funções em Python podem retornar qualquer objeto. O retorno de múltiplos valores é nativo — na verdade retorna uma <strong>tupla</strong>.</p>
+        <div class="code-block mb-4">
+          <pre><span class="comment"># Retorno simples</span>
+<span class="keyword">def</span> <span class="function">quadrado</span>(x):
+    <span class="keyword">return</span> x ** <span class="keyword">2</span>
+
+<span class="comment"># Retorno múltiplo (tupla)</span>
+<span class="keyword">def</span> <span class="function">minmax</span>(lista):
+    <span class="keyword">return</span> <span class="function">min</span>(lista), <span class="function">max</span>(lista)
+
+minimo, maximo = <span class="function">minmax</span>([<span class="keyword">3</span>, <span class="keyword">1</span>, <span class="keyword">9</span>, <span class="keyword">2</span>, <span class="keyword">7</span>])
+<span class="function">print</span>(minimo, maximo)   <span class="comment"># 1 9</span>
+
+<span class="comment"># Função sem return → None</span>
+<span class="keyword">def</span> <span class="function">saudar</span>(nome):
+    <span class="function">print</span>(<span class="string)f"Olá, {nome}!"</span>)
+
+resultado = <span class="function">saudar</span>(<span class="string">"David"</span>)
+<span class="function">print</span>(resultado)   <span class="comment"># None</span></pre>
+        </div>
+      </div>
+    </template>
+
+    <template id="tpl-documentacao">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-external-link-alt text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">Leitura Recomendada</h2>
+        </div>
+        <ul class="space-y-3 text-gray-700">
+          <li><a href="https://docs.python.org/pt-br/3/" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>Documentação Oficial do Python (pt-br)</a></li>
+          <li><a href="https://peps.python.org/pep-0008/" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>PEP 8 — Guia de Estilo para Python</a></li>
+          <li><a href="https://realpython.com/" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>Real Python — tutoriais avançados</a></li>
+          <li><a href="https://automatetheboringstuff.com/" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>Automate the Boring Stuff with Python (gratuito)</a></li>
+        </ul>
+      </div>
+    </template>
+
+    <template id="tpl-tutoriais">
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex items-center mb-4">
+          <i class="fas fa-book-open text-green-600 text-2xl mr-3"></i>
+          <h2 class="text-2xl font-bold text-gray-800">Tutoriais</h2>
+        </div>
+        <ul class="space-y-3 text-gray-700">
+          <li><a href="https://docs.python.org/pt-br/3/tutorial/" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>Tutorial Oficial Python (pt-br)</a></li>
+          <li><a href="https://www.w3schools.com/python/" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>W3Schools Python</a></li>
+          <li><a href="https://exercism.org/tracks/python" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>Exercism — prática com exercícios</a></li>
+          <li><a href="https://www.hackerrank.com/domains/python" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>HackerRank Python</a></li>
+        </ul>
+      </div>
+    </template>
+
+    <script>
+      const templates = {
+        "introducao":      "tpl-introducao",
+        "tipos":           "tpl-tipos",
+        "tipo-int":        "tpl-tipo-int",
+        "tipo-float":      "tpl-tipo-float",
+        "tipo-str":        "tpl-tipo-str",
+        "tipo-bool":       "tpl-tipo-bool",
+        "tipo-none":       "tpl-tipo-none",
+        "estruturas":      "tpl-estruturas",
+        "lista":           "tpl-lista",
+        "tupla":           "tpl-tupla",
+        "dicionario":      "tpl-dicionario",
+        "conjunto":        "tpl-conjunto",
+        "entrada-saida":   "tpl-entrada-saida",
+        "print":           "tpl-print",
+        "input":           "tpl-input",
+        "controle-fluxo":  "tpl-controle-fluxo",
+        "if-elif":         "tpl-if-elif",
+        "for":             "tpl-for",
+        "while":           "tpl-while",
+        "match":           "tpl-match",
+        "funcoes":         "tpl-funcoes",
+        "def":             "tpl-def",
+        "parametros":      "tpl-parametros",
+        "lambda":          "tpl-lambda",
+        "retorno":         "tpl-retorno",
+        "documentacao":    "tpl-documentacao",
+        "tutoriais":       "tpl-tutoriais",
+      };
+
+      function loadSection(sectionId) {
+        const tplId = templates[sectionId];
+        if (!tplId) return;
+        const tpl = document.getElementById(tplId);
+        if (!tpl) return;
+        const el = document.getElementById("explanation");
+        el.innerHTML = "";
+        el.appendChild(tpl.content.cloneNode(true));
+        localStorage.setItem("activeSectionId", sectionId);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      function initDropdowns(container) {
+        container.querySelectorAll(".dropdown-btn").forEach((button) => {
+          button.addEventListener("click", (e) => {
+            e.preventDefault();
+            const dropdownContent = button.nextElementSibling;
+            const icon = button.querySelector("i:last-child");
+
+            dropdownContent.classList.toggle("open");
+            icon.classList.toggle("rotate-90");
+
+            container.querySelectorAll(".dropdown-content").forEach((content) => {
+              if (content !== dropdownContent && content.classList.contains("open")) {
+                content.classList.remove("open");
+                content.previousElementSibling
+                  .querySelector("i:last-child")
+                  .classList.remove("rotate-90");
+              }
+            });
+            const section = button.getAttribute("data-section");
+            if (section) loadSection(section);
+          });
+        });
+      }
+
+      function initNavLinks(container) {
+        container.querySelectorAll(".nav-link").forEach((link) => {
+          link.addEventListener("click", (e) => {
+            e.preventDefault();
+            const section = link.getAttribute("data-section");
+            if (section) {
+              loadSection(section);
+              document.getElementById("mobile-drawer").classList.remove("open");
+              document.getElementById("mobile-overlay").classList.remove("open");
+            }
+          });
+        });
+      }
+
+      const hamburger = document.getElementById("hamburger-btn");
+      const drawer = document.getElementById("mobile-drawer");
+      const overlay = document.getElementById("mobile-overlay");
+      const closeBtn = document.getElementById("close-drawer");
+      const mobileNavContainer = document.getElementById("mobile-nav-container");
+
+      hamburger.addEventListener("click", () => {
+        if (mobileNavContainer.innerHTML.trim() === "") {
+          const navClone = document.getElementById("main-nav").cloneNode(true);
+          navClone.id = "mobile-nav";
+          mobileNavContainer.appendChild(navClone);
+          initDropdowns(mobileNavContainer);
+          initNavLinks(mobileNavContainer);
+        }
+        drawer.classList.add("open");
+        overlay.classList.add("open");
+      });
+
+      const closeDrawer = () => {
+        drawer.classList.remove("open");
+        overlay.classList.remove("open");
+      };
+
+      closeBtn.addEventListener("click", closeDrawer);
+      overlay.addEventListener("click", closeDrawer);
+
+      document.addEventListener("DOMContentLoaded", () => {
+        const input = document.querySelector('input[type="text"]');
+        const resultsContainer = document.getElementById("search-results");
+
+        input.addEventListener("input", () => {
+          const query = input.value.toLowerCase().trim();
+          resultsContainer.innerHTML = "";
+
+          if (query.length < 2) {
+            resultsContainer.classList.add("hidden");
+            return;
+          }
+
+          const links = document.querySelectorAll("#main-nav .nav-link");
+          const matches = [];
+
+          links.forEach((link) => {
+            const text = link.textContent.toLowerCase().trim();
+            const explanation = link.getAttribute("data-explanation") || "";
+            if (text.includes(query) || explanation.toLowerCase().includes(query)) {
+              matches.push({ element: link, text: link.textContent.trim() });
+            }
+          });
+
+          if (matches.length === 0) {
+            resultsContainer.innerHTML = "<p class='p-2 text-gray-500'>Nenhum resultado encontrado.</p>";
+          } else {
+            matches.forEach((match) => {
+              const item = document.createElement("div");
+              item.className = "px-4 py-2 hover:bg-green-100 cursor-pointer text-green-700 text-sm";
+              item.innerText = match.text;
+              item.addEventListener("click", () => {
+                match.element.click();
+                resultsContainer.classList.add("hidden");
+                input.value = "";
+              });
+              resultsContainer.appendChild(item);
+            });
+          }
+
+          resultsContainer.classList.remove("hidden");
+        });
+
+        document.addEventListener("click", (e) => {
+          if (!input.contains(e.target) && !resultsContainer.contains(e.target)) {
+            resultsContainer.classList.add("hidden");
+          }
+        });
+
+        initDropdowns(document.getElementById("sidebar"));
+        initNavLinks(document.getElementById("sidebar"));
+
+        const lastSection = localStorage.getItem("activeSectionId");
+        const sectionToLoad = lastSection && templates[lastSection] ? lastSection : "introducao";
+
+        const parentDropdownMap = {
+          "tipo-int": "dd-tipos", "tipo-float": "dd-tipos", "tipo-str": "dd-tipos",
+          "tipo-bool": "dd-tipos", "tipo-none": "dd-tipos",
+          "lista": "dd-estruturas", "tupla": "dd-estruturas", "dicionario": "dd-estruturas", "conjunto": "dd-estruturas",
+          "print": "dd-io", "input": "dd-io",
+          "if-elif": "dd-controle", "for": "dd-controle", "while": "dd-controle", "match": "dd-controle",
+          "def": "dd-funcoes", "parametros": "dd-funcoes", "lambda": "dd-funcoes", "retorno": "dd-funcoes",
+        };
+        const parentId = parentDropdownMap[sectionToLoad];
+        if (parentId) {
+          const dd = document.getElementById(parentId);
+          if (dd) {
+            dd.classList.add("open");
+            const btn = dd.previousElementSibling;
+            if (btn) btn.querySelector("i:last-child")?.classList.add("rotate-90");
+          }
+        }
+
+        loadSection(sectionToLoad);
+      });
+    </script>
+  </body>
+</html>
