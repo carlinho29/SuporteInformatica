@@ -1,1 +1,406 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portal de recursos educacionais - IFSULDEMINAS Campus Poços de Caldas">
+    <title>Portal de Aprendizado | IFSULDEMINAS - Campus Poços de Caldas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0a;
+            --bg-secondary: #141414;
+            --bg-card: #1a1a1a;
+            --bg-card-hover: #222222;
+            --text-primary: #f5f5f5;
+            --text-secondary: #a0a0a0;
+            --accent: #00a651;
+            --accent-hover: #00c45f;
+            --border: #2a2a2a;
+            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            --radius: 16px;
+        }
 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(180deg, #111111 0%, var(--bg-primary) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 1.5rem 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
+            text-align: center;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-container img {
+            max-width: 280px;
+            width: 100%;
+            height: auto;
+            filter: brightness(0) invert(1);
+        }
+
+        .campus-name {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--accent);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .site-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 0.25rem;
+        }
+
+        .site-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            max-width: 500px;
+        }
+
+        main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2.5rem 1.25rem;
+        }
+
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.75rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 1.25rem;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .category-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent);
+            box-shadow: var(--shadow);
+        }
+
+        .category-header {
+            padding: 1.25rem 1.5rem;
+            background: linear-gradient(135deg, #1f1f1f 0%, #181818 100%);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+        }
+
+        .category-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .category-links {
+            list-style: none;
+            padding: 0.75rem;
+        }
+
+        .category-links li {
+            margin-bottom: 0.35rem;
+        }
+
+        .category-links li:last-child {
+            margin-bottom: 0;
+        }
+
+        .category-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.9rem 1rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 450;
+            font-size: 0.98rem;
+            transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+        }
+
+        .category-links a:hover {
+            background: rgba(0, 166, 81, 0.12);
+            color: var(--accent-hover);
+            transform: translateX(4px);
+        }
+
+        .category-links a::before {
+            content: '→';
+            color: var(--accent);
+            font-weight: 600;
+            opacity: 0.7;
+            transition: opacity 0.2s ease;
+        }
+
+        .category-links a:hover::before {
+            opacity: 1;
+        }
+
+        footer {
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            padding: 2rem 1.25rem;
+            margin-top: auto;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .credits {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .credits strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .credits a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .credits a:hover {
+            color: var(--accent-hover);
+            text-decoration: underline;
+        }
+
+        .footer-divider {
+            width: 60px;
+            height: 2px;
+            background: var(--accent);
+            margin: 1rem auto;
+            border-radius: 1px;
+            opacity: 0.6;
+        }
+
+        .institution {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.75rem;
+        }
+
+        /* Responsive */
+        @media (min-width: 640px) {
+            .header-content {
+                padding: 0.5rem 0;
+            }
+
+            .logo-container img {
+                max-width: 320px;
+            }
+
+            .site-title {
+                font-size: 1.75rem;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 900px) {
+            header {
+                padding: 1.75rem 2rem;
+            }
+
+            main {
+                padding: 3rem 2rem;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.75rem;
+            }
+
+            .category-card:nth-child(3) {
+                grid-column: 1 / -1;
+                max-width: 560px;
+                margin: 0 auto;
+                width: 100%;
+            }
+        }
+
+        @media (min-width: 1100px) {
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        a:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .category-card,
+            .category-links a {
+                transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <div class="logo-container">
+                <img 
+                    src="https://upload.wikimedia.org/wikipedia/commons/a/a1/Instituto_Federal_do_Sul_de_Minas_Gerais_-_Marca_Horizontal_2015.svg" 
+                    alt="Logo oficial do IFSULDEMINAS - Instituto Federal do Sul de Minas Gerais"
+                    width="320"
+                    height="90"
+                >
+                <span class="campus-name">Campus Poços de Caldas</span>
+            </div>
+            <h1 class="site-title">Portal de Aprendizado</h1>
+            <p class="site-subtitle">Materiais e recursos educacionais em tecnologia e computação</p>
+        </div>
+    </header>
+
+    <main>
+        <h2 class="section-title">Categorias</h2>
+
+        <div class="categories-grid">
+            <article class="category-card">
+                <div class="category-header">
+                    <h3 class="category-title">Essencial para Devs</h3>
+                </div>
+                <ul class="category-links">
+                    <li>
+                        <a href="Essencial%20para%20Devs/indexGithub.html">GitHub</a>
+                    </li>
+                    <li>
+                        <a href="Essencial%20para%20Devs/indexVSCode.html">Visual Studio Code</a>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="category-card">
+                <div class="category-header">
+                    <h3 class="category-title">Hardware</h3>
+                </div>
+                <ul class="category-links">
+                    <li>
+                        <a href="Hardware/indexHardware.html">Conteúdo de Hardware</a>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="category-card">
+                <div class="category-header">
+                    <h3 class="category-title">Linguagens de Programação</h3>
+                </div>
+                <ul class="category-links">
+                    <li>
+                        <a href="Linguagens%20de%20Programa%C3%A7%C3%A3o/indexBrainfuck.html">Brainfuck</a>
+                    </li>
+                    <li>
+                        <a href="Linguagens%20de%20Programa%C3%A7%C3%A3o/indexCpp.html">C++</a>
+                    </li>
+                    <li>
+                        <a href="Linguagens%20de%20Programa%C3%A7%C3%A3o/indexPython.html">Python</a>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="category-card">
+                <div class="category-header">
+                    <h3 class="category-title">Redes de Computadores</h3>
+                </div>
+                <ul class="category-links">
+                    <li>
+                        <a href="Redes%20de%20Computadores/indexRedes.html">Conteúdo de Redes</a>
+                    </li>
+                </ul>
+            </article>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-divider"></div>
+            <p class="credits">
+                Desenvolvido por <strong>David Carlos Miranda Delgado</strong><br>
+                <a href="https://github.com/davidelgado28" target="_blank" rel="noopener noreferrer">github.com/davidelgado28</a>
+                <br><br>
+            </p>
+            <p class="institution">
+                IFSULDEMINAS Campus Poços de Caldas<br>
+                Todos os direitos reservados.
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
