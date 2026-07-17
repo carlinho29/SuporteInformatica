@@ -68,12 +68,18 @@
       .comment  { color: #6a9955; font-style: italic; }
       .function { color: #dcdcaa; }
       .type     { color: #4ec9b0; }
+
+      /* Identidade visual do Portal de Aprendizado - IFSULDEMINAS */
       .topbar { background-color: #14532d; }
       .brand-header { background: linear-gradient(180deg, #15803d 0%, #16a34a 100%); }
       .brand-logo { height: 38px; width: auto; filter: brightness(0) invert(1); }
+
+      /* Evita scroll horizontal causado pelo drawer mobile posicionado fora da tela */
+      html, body { max-width: 100%; overflow-x: hidden; }
     </style>
   </head>
   <body class="bg-gray-100 font-sans">
+    <!-- Overlay e Drawer para Mobile -->
     <div id="mobile-overlay"></div>
     <div id="mobile-drawer">
       <div class="p-4 border-b flex justify-between items-center bg-green-700 text-white">
@@ -81,9 +87,11 @@
         <button id="close-drawer" class="text-2xl">&times;</button>
       </div>
       <div id="mobile-nav-container" class="p-4">
+        <!-- O conteúdo da sidebar será clonado aqui via JS -->
       </div>
     </div>
 
+    <!-- Barra institucional -->
     <div class="topbar text-green-100 text-xs">
       <div class="container mx-auto px-4 py-1.5 flex items-center justify-between">
         <span class="hidden sm:inline">IFSULDEMINAS &middot; Campus Poços de Caldas</span>
@@ -92,6 +100,8 @@
         </a>
       </div>
     </div>
+
+    <!-- Header -->
     <header class="brand-header text-white shadow-lg">
       <div
         class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center header-container"
@@ -206,7 +216,6 @@
                 <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="input" data-explanation="Função input em Python">input()</a>
               </div>
             </div>
-
             <div class="mb-4 relative">
               <a
                 href="#controle_fluxo"
@@ -227,7 +236,6 @@
                 <a href="#" class="nav-link flex items-center block px-3 py-2 rounded hover:bg-green-100 text-green-600 font-medium transition-all" data-section="match" data-explanation="Estrutura match/case em Python">match / case</a>
               </div>
             </div>
-
             <div class="mb-4 relative">
               <a
                 href="#funcoes"
@@ -299,6 +307,7 @@
       </div>
     </main>
 
+    <!-- Templates Originais Preservados -->
     <template id="tpl-introducao">
       <div class="bg-white rounded-lg shadow-md p-6 mb-6">
         <div class="flex items-center mb-4">
@@ -986,6 +995,7 @@ resultado = <span class="function">saudar</span>(<span class="string">"David"</s
         window.scrollTo({ top: 0, behavior: "smooth" });
       }
 
+      // Funcionalidade de Dropdown
       function initDropdowns(container) {
         container.querySelectorAll(".dropdown-btn").forEach((button) => {
           button.addEventListener("click", (e) => {
@@ -996,6 +1006,7 @@ resultado = <span class="function">saudar</span>(<span class="string">"David"</s
             dropdownContent.classList.toggle("open");
             icon.classList.toggle("rotate-90");
 
+            // Fechar outros dropdowns no mesmo container
             container.querySelectorAll(".dropdown-content").forEach((content) => {
               if (content !== dropdownContent && content.classList.contains("open")) {
                 content.classList.remove("open");
@@ -1010,6 +1021,7 @@ resultado = <span class="function">saudar</span>(<span class="string">"David"</s
         });
       }
 
+      // Links de navegação
       function initNavLinks(container) {
         container.querySelectorAll(".nav-link").forEach((link) => {
           link.addEventListener("click", (e) => {
@@ -1017,6 +1029,7 @@ resultado = <span class="function">saudar</span>(<span class="string">"David"</s
             const section = link.getAttribute("data-section");
             if (section) {
               loadSection(section);
+              // Fechar drawer se estiver no mobile
               document.getElementById("mobile-drawer").classList.remove("open");
               document.getElementById("mobile-overlay").classList.remove("open");
             }
@@ -1024,6 +1037,7 @@ resultado = <span class="function">saudar</span>(<span class="string">"David"</s
         });
       }
 
+      // Controle do Drawer Mobile
       const hamburger = document.getElementById("hamburger-btn");
       const drawer = document.getElementById("mobile-drawer");
       const overlay = document.getElementById("mobile-overlay");
@@ -1050,6 +1064,7 @@ resultado = <span class="function">saudar</span>(<span class="string">"David"</s
       closeBtn.addEventListener("click", closeDrawer);
       overlay.addEventListener("click", closeDrawer);
 
+      // Pesquisa
       document.addEventListener("DOMContentLoaded", () => {
         const input = document.querySelector('input[type="text"]');
         const resultsContainer = document.getElementById("search-results");
