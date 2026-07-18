@@ -1,711 +1,1144 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Estruturas de Dados: Referência da Linguagem Brainfuck</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <style>
-      ::-webkit-scrollbar { width: 8px; }
-      ::-webkit-scrollbar-track { background: #f1f1f1; }
-      ::-webkit-scrollbar-thumb { background: #888; border-radius: 4px; }
-      ::-webkit-scrollbar-thumb:hover { background: #555; }
-      .transition-all { transition: all 0.3s ease; }
-      .code-block {
-        font-family: "Courier New", monospace;
-        background-color: #1e1e1e;
-        color: #d4d4d4;
-        border-radius: 0 0 8px 8px;
-        padding: 1.25rem;
-        overflow-x: auto;
-        font-size: 0.9rem;
-        line-height: 1.6;
-        border: 1px solid #333;
-        border-top: none;
-        position: relative;
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Estruturas de Dados: Referência da Linguagem Brainfuck</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-card: #1a1a1a;
+      --bg-card-hover: #222222;
+      --bg-sidebar: #111111;
+      --bg-dropdown: #181818;
+      --text-primary: #f5f5f5;
+      --text-secondary: #a0a0a0;
+      --text-muted: #666666;
+      --accent: #00a651;
+      --accent-hover: #00c45f;
+      --accent-dim: rgba(0, 166, 81, 0.12);
+      --border: #2a2a2a;
+      --border-hover: #333333;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: all 0.25s ease;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .topbar {
+      background: linear-gradient(180deg, #111111 0%, var(--bg-primary) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+    }
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+    .topbar a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .topbar a:hover { color: var(--accent-hover); }
+
+    .brand-header {
+      background: linear-gradient(180deg, #111111 0%, var(--bg-primary) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .header-title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .brand-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .brand-header i { color: var(--accent); font-size: 1.6rem; }
+
+    .search-wrapper { position: relative; }
+    .search-input {
+      padding: 0.6rem 2.5rem 0.6rem 1rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      width: 220px;
+      transition: var(--transition);
+    }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+    .search-btn {
+      position: absolute;
+      right: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    #search-results {
+      position: absolute;
+      left: 0;
+      top: calc(100% + 0.5rem);
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow);
+      z-index: 200;
+      overflow: hidden;
+    }
+    #search-results.hidden { display: none; }
+    .search-result-item {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      border-bottom: 1px solid var(--border);
+    }
+    .search-result-item:last-child { border-bottom: none; }
+    .search-result-item:hover {
+      background: var(--accent-dim);
+      color: var(--accent-hover);
+    }
+
+    #hamburger-btn {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
+    #hamburger-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    #mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 300;
+      backdrop-filter: blur(4px);
+    }
+    #mobile-overlay.open { display: block; }
+
+    #mobile-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300px;
+      background: var(--bg-sidebar);
+      z-index: 400;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+    }
+    #mobile-drawer.open { transform: translateX(0); }
+    .drawer-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .drawer-header h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    #close-drawer {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    #close-drawer:hover { color: var(--accent); }
+    #mobile-nav-container { padding: 0.75rem; }
+
+    main { flex: 1; }
+    .main-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem;
+      display: flex;
+      gap: 2rem;
+    }
+
+    #sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      height: fit-content;
+      position: sticky;
+      top: 100px;
+      box-shadow: var(--shadow-sm);
+    }
+    .sidebar-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-header h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    #main-nav { padding: 0.75rem; }
+
+    .nav-section { margin-bottom: 0.5rem; }
+    .nav-link, .dropdown-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.7rem 0.9rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+    .nav-link:hover, .dropdown-btn:hover {
+      background: var(--accent-dim);
+      color: var(--accent-hover);
+    }
+    .nav-link i, .dropdown-btn i { width: 18px; text-align: center; }
+    .dropdown-btn i:last-child {
+      position: absolute;
+      right: 0.75rem;
+      font-size: 0.7rem;
+      transition: transform 0.3s ease;
+    }
+    .dropdown-btn i.rotate-90 { transform: rotate(90deg); }
+
+    .dropdown-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      padding-left: 0.5rem;
+    }
+    .dropdown-content.open { max-height: 1000px; }
+    .dropdown-content .nav-link {
+      font-size: 0.85rem;
+      padding: 0.55rem 0.9rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .sidebar-resources {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .sidebar-resources h3 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+      padding: 0 0.9rem;
+    }
+    .sidebar-resources ul { list-style: none; }
+    .sidebar-resources li { margin-bottom: 0.15rem; }
+    .sidebar-resources a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.9rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+    .sidebar-resources a:hover {
+      color: var(--accent-hover);
+      background: var(--accent-dim);
+    }
+
+    #content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .content-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .content-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow);
+    }
+    .content-card h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .content-card h2 i { color: var(--accent); font-size: 1.3rem; }
+    .content-card p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+    .content-card p:last-child { margin-bottom: 0; }
+    .content-card strong { color: var(--text-primary); }
+    .content-card code {
+      background: var(--bg-secondary);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: var(--accent-hover);
+      border: 1px solid var(--border);
+    }
+
+    .code-block {
+      font-family: 'Fira Code', 'Courier New', monospace;
+      background: #0d0d0d;
+      color: #d4d4d4;
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      border: 1px solid var(--border);
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .keyword  { color: #569cd6; }
+    .string   { color: #ce9178; }
+    .comment  { color: #6a9955; font-style: italic; }
+    .function { color: #dcdcaa; }
+    .type     { color: #4ec9b0; }
+    .op       { color: #f44747; font-weight: bold; }
+
+    .info-box {
+      background: var(--accent-dim);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+    }
+    .info-box h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent-hover);
+      margin-bottom: 0.5rem;
+    }
+    .info-box ul {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      padding-left: 1.2rem;
+    }
+    .info-box li { margin-bottom: 0.25rem; }
+    .info-box i { color: var(--accent); margin-right: 0.5rem; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .grid-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .grid-item:hover { border-color: var(--accent); }
+    .grid-item strong { color: var(--accent); }
+
+    .content-card a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .content-card a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 1.25rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-divider {
+      width: 60px;
+      height: 2px;
+      background: var(--accent);
+      margin: 0 auto 1rem;
+      border-radius: 1px;
+      opacity: 0.6;
+    }
+    footer p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0.5rem; }
+    footer .credits { font-weight: 600; color: var(--text-primary); }
+    footer a { color: var(--accent); text-decoration: none; transition: color 0.2s ease; }
+    footer a:hover { color: var(--accent-hover); }
+    .institution { font-size: 0.78rem !important; color: var(--text-muted) !important; margin-top: 0.75rem; }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    @media (max-width: 900px) {
+      #sidebar { display: none; }
+      #hamburger-btn { display: block; }
+      .main-layout { padding: 1.25rem; gap: 0; }
+      .brand-header h1 { font-size: 1.1rem; }
+      .search-input { width: 160px; font-size: 0.85rem; }
+      .content-card { padding: 1.25rem; }
+      .content-card h2 { font-size: 1.2rem; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .code-block { padding: 1rem; font-size: 0.82rem; }
+    }
+
+    @media (max-width: 480px) {
+      .brand-header { padding: 1rem; }
+      .brand-header h1 { font-size: 0.95rem; }
+      .search-input { width: 130px; padding: 0.5rem 2rem 0.5rem 0.8rem; }
+      .content-card { padding: 1rem; }
+      .content-card h2 { font-size: 1.1rem; }
+      .code-block { padding: 0.75rem; font-size: 0.78rem; }
+      .grid-item { padding: 0.75rem; font-size: 0.85rem; }
+      .topbar-inner { flex-direction: column; gap: 0.25rem; text-align: center; }
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition: none !important;
+        animation: none !important;
       }
-      .code-block-wrapper {
-        border-radius: 8px;
-        overflow: hidden;
-        margin-bottom: 1rem;
-        box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-        border: 1px solid #333;
-      }
-      .code-block-header {
-        background-color: #2d2d2d;
-        padding: 0.5rem 1rem;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        border-bottom: 1px solid #444;
-      }
-      .code-block-header .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
-      .code-block-header .dot-red    { background-color: #ff5f57; }
-      .code-block-header .dot-yellow { background-color: #febc2e; }
-      .code-block-header .dot-green  { background-color: #28c840; }
-      .code-block-header .file-label { margin-left: 8px; font-size: 0.75rem; color: #888; font-family: "Courier New", monospace; }
-      .code-block pre { margin: 0; white-space: pre; }
-      .keyword  { color: #569cd6; }
-      .type     { color: #4ec9b0; }
-      .string   { color: #ce9178; }
-      .comment  { color: #6a9955; font-style: italic; }
-      .function { color: #dcdcaa; }
-      .builtin  { color: #c586c0; }
-      .op       { color: #f44747; font-weight: bold; }
-      .dropdown-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
-      .dropdown-content.open { max-height: 500px; }
-      .content-section { display: none; }
-      .content-section.active { display: block; }
-    </style>
-  </head>
-  <body class="bg-gray-100 font-sans">
+    }
+  </style>
+</head>
+<body>
+  <div id="mobile-overlay"></div>
+  <div id="mobile-drawer">
+    <div class="drawer-header">
+      <h2>Sumário</h2>
+      <button id="close-drawer">&times;</button>
+    </div>
+    <div id="mobile-nav-container"></div>
+  </div>
 
-    <header class="bg-blue-700 text-white shadow-lg">
-      <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
-        <div class="flex items-center justify-between w-full md:w-auto mb-4 md:mb-0">
-          <div class="flex items-center">
-            <i class="fas fa-brain text-3xl mr-3"></i>
-            <h1 class="text-2xl font-bold">Referência da Linguagem Brainfuck</h1>
-          </div>
-          <button id="mobile-menu-btn" class="md:hidden text-white text-2xl focus:outline-none ml-4" title="Abrir sumário">
-            <i class="fas fa-bars"></i>
-          </button>
-        </div>
-        <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 w-full md:w-auto">
-          <div class="relative w-full sm:w-64">
-            <input type="text" placeholder="Pesquisar..."
-              class="px-4 py-2 rounded-full bg-blue-600 text-white placeholder-blue-300 focus:outline-none focus:ring-2 focus:ring-blue-400 w-full" />
-            <button class="absolute right-3 top-2 text-blue-300 hover:text-white">
-              <i class="fas fa-search"></i>
-            </button>
-            <div id="search-results"
-              class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg z-50 hidden text-gray-800"></div>
-          </div>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span class="hidden sm:inline">IFSULDEMINAS &middot; Campus Poços de Caldas</span>
+      <a href="../../index.html">
+        <i class="fas fa-arrow-left mr-1"></i> Portal de Aprendizado
+      </a>
+    </div>
+  </div>
+
+  <header class="brand-header">
+    <div class="header-container">
+      <div class="header-title-wrapper">
+        <button id="hamburger-btn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <i class="fas fa-brain text-3xl"></i>
+        <h1>Referência da Linguagem Brainfuck</h1>
+      </div>
+      <div class="search-wrapper">
+        <div class="relative">
+          <input type="text" placeholder="Pesquisar" class="search-input" />
+          <button class="search-btn"><i class="fas fa-search"></i></button>
+          <div id="search-results" class="hidden"></div>
         </div>
       </div>
-    </header>
+    </div>
+  </header>
 
-    <main class="flex-1">
-      <div class="flex flex-1 container mx-auto px-4 py-8">
-
-        <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden transition-opacity"></div>
-
-        <div id="sidebar"
-          class="w-72 shrink-0 bg-white rounded-r-lg md:rounded-lg shadow-md p-4 mr-0 md:mr-8 fixed md:sticky top-0 md:top-8 left-0 h-screen md:h-fit z-50 md:z-0 transform -translate-x-full md:translate-x-0 transition-transform duration-300 overflow-y-auto md:overflow-visible">
-          <div class="p-4 border-b border-gray-200 flex justify-between items-center md:block md:p-0 md:border-none">
-            <h1 class="text-2xl font-bold md:mb-4 text-blue-700">Sumário</h1>
-            <button id="close-sidebar-btn" class="md:hidden text-gray-500 hover:text-blue-700 text-2xl focus:outline-none">
-              <i class="fas fa-times"></i>
-            </button>
+  <main>
+    <div class="main-layout">
+      <div id="sidebar">
+        <div class="sidebar-header">
+          <h1>Sumário</h1>
+        </div>
+        <nav id="main-nav">
+          <div class="nav-section">
+            <a href="#introducao" class="nav-link" data-section="introducao" data-explanation="Introdução à linguagem Brainfuck e sua história.">
+              <i class="fas fa-play"></i>
+              <span>Introdução</span>
+            </a>
           </div>
-          <nav>
 
-            <div class="mb-4 mt-4">
-              <a href="#" class="nav-link flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all"
-                data-section="introducao" data-explanation="Introdução à linguagem Brainfuck e sua história.">
-                <i class="fas fa-play mr-2 ml-2"></i>
-                <span>Introdução</span>
-              </a>
-            </div>
+          <div class="nav-section">
+            <a href="#modelo" class="nav-link" data-section="modelo" data-explanation="Como Brainfuck funciona internamente: fita, ponteiro e células.">
+              <i class="fas fa-memory"></i>
+              <span>Modelo de Memória</span>
+            </a>
+          </div>
 
-            <div class="mb-4">
-              <a href="#" class="nav-link flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all"
-                data-section="modelo" data-explanation="Como Brainfuck funciona internamente: fita, ponteiro e células.">
-                <i class="fas fa-memory mr-2 ml-2"></i>
-                <span>Modelo de Memória</span>
-              </a>
-            </div>
-
-            <div class="mb-4 relative">
-              <a href="#" class="dropdown-btn flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all"
-                data-section="comandos" data-explanation="Os 8 comandos da linguagem Brainfuck.">
-                <i class="fas fa-terminal mr-2"></i>
-                <span>Comandos</span>
-                <i class="fas fa-chevron-right absolute end-4 transition-all transform"></i>
-              </a>
-              <div id="dd-comandos" class="dropdown-content pl-6 mt-1">
-                <a href="#" class="nav-link flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all" data-section="cmd-mais" data-explanation="Operador + incrementa a célula atual">&nbsp;<span class="op font-bold">+</span>&nbsp;Incrementar</a>
-                <a href="#" class="nav-link flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all" data-section="cmd-menos" data-explanation="Operador - decrementa a célula atual">&nbsp;<span class="op font-bold">-</span>&nbsp;Decrementar</a>
-                <a href="#" class="nav-link flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all" data-section="cmd-direita" data-explanation="Operador > move ponteiro para direita">&nbsp;<span class="op font-bold">&gt;</span>&nbsp;Mover Direita</a>
-                <a href="#" class="nav-link flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all" data-section="cmd-esquerda" data-explanation="Operador < move ponteiro para esquerda">&nbsp;<span class="op font-bold">&lt;</span>&nbsp;Mover Esquerda</a>
-                <a href="#" class="nav-link flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all" data-section="cmd-saida" data-explanation="Operador . exibe o caractere da célula atual">&nbsp;<span class="op font-bold">.</span>&nbsp;Saída</a>
-                <a href="#" class="nav-link flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all" data-section="cmd-entrada" data-explanation="Operador , lê um caractere do usuário">&nbsp;<span class="op font-bold">,</span>&nbsp;Entrada</a>
-                <a href="#" class="nav-link flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all" data-section="cmd-loop" data-explanation="Operadores [ ] formam laços de repetição">&nbsp;<span class="op font-bold">[ ]</span>&nbsp;Laço</a>
-              </div>
-            </div>
-
-            <div class="mb-4 relative">
-              <a href="#" class="dropdown-btn flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all"
-                data-section="exemplos" data-explanation="Exemplos clássicos em Brainfuck.">
-                <i class="fas fa-code mr-2"></i>
-                <span>Exemplos</span>
-                <i class="fas fa-chevron-right absolute end-4 transition-all transform"></i>
-              </a>
-              <div id="dd-exemplos" class="dropdown-content pl-6 mt-1">
-                <a href="#" class="nav-link flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all" data-section="ex-hello" data-explanation="Hello World em Brainfuck">Hello World</a>
-                <a href="#" class="nav-link flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all" data-section="ex-soma" data-explanation="Somar dois números em Brainfuck">Somar dois números</a>
-                <a href="#" class="nav-link flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all" data-section="ex-loop" data-explanation="Contador com laço em Brainfuck">Contador com laço</a>
-              </div>
-            </div>
-
-            <div class="mb-4">
-              <a href="#" class="nav-link flex items-center px-3 py-2 rounded hover:bg-blue-100 text-blue-600 font-medium transition-all"
-                data-section="dicas" data-explanation="Dicas e padrões comuns em Brainfuck.">
-                <i class="fas fa-lightbulb mr-2 ml-2"></i>
-                <span>Dicas e Padrões</span>
-              </a>
-            </div>
-
-            <div class="mt-8 border-t pt-4">
-              <h3 class="font-bold mb-2">Recursos Úteis</h3>
-              <ul class="space-y-2">
-                <li><a href="#" class="nav-link text-sm text-blue-600 hover:underline flex items-center" data-section="documentacao" data-explanation="Links para leitura recomendada sobre Brainfuck."><i class="fas fa-external-link-alt mr-2 text-xs"></i>Leitura Recomendada</a></li>
-              </ul>
-            </div>
-
-          </nav>
-        </div>
-        <div id="content" class="flex flex-col flex-1">
-          <div id="explanation"></div>
-          <footer class="mt-12 border-t pt-8 text-center text-gray-600 text-sm">
-            <p>© 2026 Referência da Linguagem Brainfuck. Todos os direitos reservados.</p>
-            <p class="mt-2">Este site é apenas para fins educacionais.</p>
-            <p class="mt-2 font-semibold text-blue-700"> Lucas Fernades &amp; David Delgado</p>
-            <div class="flex justify-center space-x-4 mt-4">
-              <a href="https://github.com/" target="_blank" class="text-blue-600 hover:text-blue-800"><i class="fab fa-github"></i> GitHub</a>
-            </div>
-          </footer>
-        </div>
-      </div>
-    </main>
-
-    <template id="tpl-introducao">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <i class="fas fa-brain text-blue-600 text-2xl mr-3"></i>
-          <h2 class="text-2xl font-bold text-gray-800">Introdução ao Brainfuck</h2>
-        </div>
-        <p class="text-gray-700 mb-4">
-          Brainfuck é uma linguagem de programação esotérica criada por <strong>Urban Müller</strong> em 1993. O objetivo era criar a menor implementação possível de um compilador, pois a original ocupava apenas 240 bytes.
-        </p>
-        <p class="text-gray-700 mb-4">
-          Apesar de ser Turing-completa (ou seja, capaz de computar qualquer coisa computável), ela possui apenas <strong>8 comandos</strong>, todos representados por símbolos. Não é usada em produção, mas é muito popular como desafio intelectual e para estudo de teoria da computação.
-        </p>
-        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mt-4">
-          <div class="flex">
-            <i class="fas fa-lightbulb text-blue-500 mr-3 mt-1"></i>
-            <div>
-              <h4 class="text-sm font-medium text-blue-800">Características principais</h4>
-              <ul class="mt-1 text-sm text-blue-700 list-disc list-inside">
-                <li>Apenas 8 comandos: <code>+ - &gt; &lt; . , [ ]</code></li>
-                <li>Opera sobre uma fita de células de memória</li>
-                <li>Cada célula armazena um número de 0 a 255 (bytes)</li>
-                <li>Turing-completa — pode calcular qualquer algoritmo</li>
-                <li>Qualquer caractere que não seja um dos 8 comandos é tratado como comentário</li>
-              </ul>
+          <div class="nav-section">
+            <a href="#comandos" class="dropdown-btn" data-section="comandos" data-explanation="Os 8 comandos da linguagem Brainfuck.">
+              <i class="fas fa-terminal"></i>
+              <span>Comandos</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <div id="dd-comandos" class="dropdown-content">
+              <a href="#" class="nav-link" data-section="cmd-mais" data-explanation="Operador + incrementa a célula atual"><span class="op font-bold">+</span> Incrementar</a>
+              <a href="#" class="nav-link" data-section="cmd-menos" data-explanation="Operador - decrementa a célula atual"><span class="op font-bold">-</span> Decrementar</a>
+              <a href="#" class="nav-link" data-section="cmd-direita" data-explanation="Operador > move ponteiro para direita"><span class="op font-bold">&gt;</span> Mover Direita</a>
+              <a href="#" class="nav-link" data-section="cmd-esquerda" data-explanation="Operador < move ponteiro para esquerda"><span class="op font-bold">&lt;</span> Mover Esquerda</a>
+              <a href="#" class="nav-link" data-section="cmd-saida" data-explanation="Operador . exibe o caractere da célula atual"><span class="op font-bold">.</span> Saída</a>
+              <a href="#" class="nav-link" data-section="cmd-entrada" data-explanation="Operador , lê um caractere do usuário"><span class="op font-bold">,</span> Entrada</a>
+              <a href="#" class="nav-link" data-section="cmd-loop" data-explanation="Operadores [ ] formam laços de repetição"><span class="op font-bold">[ ]</span> Laço</a>
             </div>
           </div>
-        </div>
-      </div>
-    </template>
 
-    <template id="tpl-modelo">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <i class="fas fa-memory text-blue-600 text-2xl mr-3"></i>
-          <h2 class="text-2xl font-bold text-gray-800">Modelo de Memória</h2>
-        </div>
-        <p class="text-gray-700 mb-4">
-          Brainfuck opera sobre uma <strong>fita</strong> (array) de células de memória, cada uma iniciando em <code>0</code>. Um <strong>ponteiro</strong> aponta para a célula atual e pode ser movido para esquerda ou direita.
-        </p>
-        <div class="overflow-x-auto mb-4">
-          <table class="w-full text-center border border-gray-300 rounded">
-            <thead class="bg-blue-100">
-              <tr>
-                <th class="border px-4 py-2">Índice</th>
-                <th class="border px-4 py-2">0</th>
-                <th class="border px-4 py-2 bg-blue-300">1 ← ponteiro</th>
-                <th class="border px-4 py-2">2</th>
-                <th class="border px-4 py-2">3</th>
-                <th class="border px-4 py-2">...</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="border px-4 py-2 font-bold">Valor</td>
-                <td class="border px-4 py-2">0</td>
-                <td class="border px-4 py-2 bg-blue-200 font-bold">5</td>
-                <td class="border px-4 py-2">0</td>
-                <td class="border px-4 py-2">0</td>
-                <td class="border px-4 py-2">...</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
-          <p class="text-sm text-yellow-800"><i class="fas fa-exclamation-triangle mr-2"></i>Quando o valor de uma célula ultrapassa 255, ele volta para 0 (overflow). Da mesma forma, decrementar abaixo de 0 vai para 255.</p>
-        </div>
-      </div>
-    </template>
-
-    <template id="tpl-comandos">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <i class="fas fa-terminal text-blue-600 text-2xl mr-3"></i>
-          <h2 class="text-2xl font-bold text-gray-800">Os 8 Comandos</h2>
-        </div>
-        <p class="text-gray-700 mb-4">Brainfuck possui exatamente 8 comandos. Qualquer outro caractere no código é ignorado e pode ser usado como comentário.</p>
-        <div class="overflow-x-auto">
-          <table class="w-full border border-gray-300 rounded text-sm">
-            <thead class="bg-blue-100">
-              <tr>
-                <th class="border px-4 py-2 text-center">Comando</th>
-                <th class="border px-4 py-2">Descrição</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">+</td><td class="border px-4 py-2">Incrementa o valor da célula atual em 1</td></tr>
-              <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">-</td><td class="border px-4 py-2">Decrementa o valor da célula atual em 1</td></tr>
-              <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">&gt;</td><td class="border px-4 py-2">Move o ponteiro para a próxima célula (direita)</td></tr>
-              <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">&lt;</td><td class="border px-4 py-2">Move o ponteiro para a célula anterior (esquerda)</td></tr>
-              <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">.</td><td class="border px-4 py-2">Exibe o caractere ASCII da célula atual</td></tr>
-              <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">,</td><td class="border px-4 py-2">Lê um caractere da entrada e armazena na célula atual</td></tr>
-              <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">[</td><td class="border px-4 py-2">Se a célula atual for 0, pula para o <code>]</code> correspondente</td></tr>
-              <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">]</td><td class="border px-4 py-2">Se a célula atual for diferente de 0, volta para o <code>[</code> correspondente</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </template>
-
-    <template id="tpl-cmd-mais">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <span class="text-red-500 text-4xl font-bold mr-4">+</span>
-          <h2 class="text-2xl font-bold text-gray-800">Incrementar célula</h2>
-        </div>
-        <p class="text-gray-700 mb-4">O comando <code class="op">+</code> adiciona 1 ao valor da célula onde o ponteiro está. Se o valor for 255, voltará para 0 (overflow de byte).</p>
-        <div class="code-block-wrapper">
-          <div class="code-block-header">
-            <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
-            <span class="file-label">exemplo.bf</span>
+          <div class="nav-section">
+            <a href="#exemplos" class="dropdown-btn" data-section="exemplos" data-explanation="Exemplos clássicos em Brainfuck.">
+              <i class="fas fa-code"></i>
+              <span>Exemplos</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <div id="dd-exemplos" class="dropdown-content">
+              <a href="#" class="nav-link" data-section="ex-hello" data-explanation="Hello World em Brainfuck">Hello World</a>
+              <a href="#" class="nav-link" data-section="ex-soma" data-explanation="Somar dois números em Brainfuck">Somar dois números</a>
+              <a href="#" class="nav-link" data-section="ex-loop" data-explanation="Contador com laço em Brainfuck">Contador com laço</a>
+            </div>
           </div>
-          <div class="code-block"><pre><span class="comment">Célula 0 começa em 0</span>
-<span class="op">+++</span>   <span class="comment">célula 0 agora vale 3</span>
-<span class="op">++</span>    <span class="comment">célula 0 agora vale 5</span></pre></div>
-        </div>
-        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mt-2">
-          <p class="text-sm text-blue-700">Para colocar o valor 65 (ASCII de 'A') em uma célula, você precisaria de 65 sinais <code>+</code> seguidos.</p>
-        </div>
-      </div>
-    </template>
 
-    <template id="tpl-cmd-menos">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <span class="text-red-500 text-4xl font-bold mr-4">-</span>
-          <h2 class="text-2xl font-bold text-gray-800">Decrementar célula</h2>
-        </div>
-        <p class="text-gray-700 mb-4">O comando <code class="op">-</code> subtrai 1 do valor da célula atual. Se o valor for 0, voltará para 255 (underflow de byte).</p>
-        <div class="code-block-wrapper">
-          <div class="code-block-header">
-            <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
-            <span class="file-label">exemplo.bf</span>
+          <div class="nav-section">
+            <a href="#dicas" class="nav-link" data-section="dicas" data-explanation="Dicas e padrões comuns em Brainfuck.">
+              <i class="fas fa-lightbulb"></i>
+              <span>Dicas e Padrões</span>
+            </a>
           </div>
-          <div class="code-block"><pre><span class="op">+++++</span>  <span class="comment">célula 0 = 5</span>
-<span class="op">--</span>     <span class="comment">célula 0 = 3</span>
-<span class="op">---</span>    <span class="comment">célula 0 = 0</span>
-<span class="op">-</span>      <span class="comment">célula 0 = 255 (underflow)</span></pre></div>
-        </div>
-      </div>
-    </template>
 
-    <template id="tpl-cmd-direita">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <span class="text-red-500 text-4xl font-bold mr-4">&gt;</span>
-          <h2 class="text-2xl font-bold text-gray-800">Mover ponteiro para direita</h2>
-        </div>
-        <p class="text-gray-700 mb-4">O comando <code class="op">&gt;</code> avança o ponteiro para a próxima célula da fita.</p>
-        <div class="code-block-wrapper">
-          <div class="code-block-header">
-            <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
-            <span class="file-label">exemplo.bf</span>
+          <div class="nav-section">
+            <a href="#documentacao" class="nav-link" data-section="documentacao" data-explanation="Links para leitura recomendada sobre Brainfuck.">
+              <i class="fas fa-book"></i>
+              <span>Leitura Recomendada</span>
+            </a>
           </div>
-          <div class="code-block"><pre><span class="op">+++</span>    <span class="comment">célula 0 = 3</span>
-<span class="op">&gt;</span>      <span class="comment">ponteiro agora está na célula 1</span>
-<span class="op">+++++</span>  <span class="comment">célula 1 = 5</span>
-<span class="op">&gt;</span>      <span class="comment">ponteiro agora está na célula 2</span>
-<span class="op">+</span>      <span class="comment">célula 2 = 1</span></pre></div>
-        </div>
+        </nav>
       </div>
-    </template>
 
-    <template id="tpl-cmd-esquerda">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <span class="text-red-500 text-4xl font-bold mr-4">&lt;</span>
-          <h2 class="text-2xl font-bold text-gray-800">Mover ponteiro para esquerda</h2>
-        </div>
-        <p class="text-gray-700 mb-4">O comando <code class="op">&lt;</code> recua o ponteiro para a célula anterior da fita.</p>
-        <div class="code-block-wrapper">
-          <div class="code-block-header">
-            <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
-            <span class="file-label">exemplo.bf</span>
+      <div id="content">
+        <div id="explanation"></div>
+
+        <footer>
+          <div class="footer-content">
+            <div class="footer-divider"></div>
+            <p>© 2026 Referência da Linguagem Brainfuck — IFSULDEMINAS Campus Poços de Caldas</p>
+            <p class="credits">Desenvolvido por Lucas Fernandes &amp; David Delgado</p>
+            <p class="institution">Material didático para estudo de linguagens esotéricas e teoria da computação.</p>
           </div>
-          <div class="code-block"><pre><span class="op">&gt;&gt;&gt;</span>    <span class="comment">vai para célula 3</span>
-<span class="op">++</span>     <span class="comment">célula 3 = 2</span>
-<span class="op">&lt;&lt;</span>     <span class="comment">volta para célula 1</span>
-<span class="op">++++</span>   <span class="comment">célula 1 = 4</span></pre></div>
-        </div>
+        </footer>
       </div>
-    </template>
+    </div>
+  </main>
 
-    <template id="tpl-cmd-saida">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <span class="text-red-500 text-4xl font-bold mr-4">.</span>
-          <h2 class="text-2xl font-bold text-gray-800">Saída de dados</h2>
-        </div>
-        <p class="text-gray-700 mb-4">O comando <code class="op">.</code> exibe o caractere cujo código ASCII é igual ao valor da célula atual.</p>
-        <div class="code-block-wrapper">
-          <div class="code-block-header">
-            <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
-            <span class="file-label">exemplo.bf</span>
+  <template id="tpl-introducao">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-brain text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Introdução ao Brainfuck</h2>
+      </div>
+      <p class="text-gray-700 mb-4">
+        Brainfuck é uma linguagem de programação esotérica criada por <strong>Urban Müller</strong> em 1993. O objetivo era criar a menor implementação possível de um compilador, pois a original ocupava apenas 240 bytes.
+      </p>
+      <p class="text-gray-700 mb-4">
+        Apesar de ser Turing-completa (ou seja, capaz de computar qualquer coisa computável), ela possui apenas <strong>8 comandos</strong>, todos representados por símbolos. Não é usada em produção, mas é muito popular como desafio intelectual e para estudo de teoria da computação.
+      </p>
+      <div class="bg-green-50 border-l-4 border-green-500 p-4 mt-4">
+        <div class="flex">
+          <i class="fas fa-lightbulb text-green-500 mr-3 mt-1"></i>
+          <div>
+            <h4 class="text-sm font-medium text-green-800">Características principais</h4>
+            <ul class="mt-1 text-sm text-green-700 list-disc list-inside">
+              <li>Apenas 8 comandos: <code>+ - &gt; &lt; . , [ ]</code></li>
+              <li>Opera sobre uma fita de células de memória</li>
+              <li>Cada célula armazena um número de 0 a 255 (bytes)</li>
+              <li>Turing-completa — pode calcular qualquer algoritmo</li>
+              <li>Qualquer caractere que não seja um dos 8 comandos é tratado como comentário</li>
+            </ul>
           </div>
-          <div class="code-block"><pre><span class="comment">ASCII de 'A' = 65</span>
-<span class="op">+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</span>
-<span class="comment">65 sinais + deixam a célula com valor 65</span>
-<span class="op">.</span>      <span class="comment">exibe: A</span></pre></div>
-        </div>
-        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mt-2">
-          <p class="text-sm text-blue-700">Na prática, usa-se laços para atingir valores altos em vez de repetir <code>+</code> muitas vezes.</p>
         </div>
       </div>
-    </template>
+    </div>
+  </template>
 
-    <template id="tpl-cmd-entrada">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <span class="text-red-500 text-4xl font-bold mr-4">,</span>
-          <h2 class="text-2xl font-bold text-gray-800">Entrada de dados</h2>
-        </div>
-        <p class="text-gray-700 mb-4">O comando <code class="op">,</code> lê um único caractere da entrada padrão e armazena seu código ASCII na célula atual.</p>
-        <div class="code-block-wrapper">
-          <div class="code-block-header">
-            <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
-            <span class="file-label">exemplo.bf</span>
-          </div>
-          <div class="code-block"><pre><span class="op">,</span>      <span class="comment">lê um caractere do usuário e guarda na célula 0</span>
-<span class="op">.</span>      <span class="comment">exibe o mesmo caractere de volta (eco)</span></pre></div>
-        </div>
+  <template id="tpl-modelo">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-memory text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Modelo de Memória</h2>
       </div>
-    </template>
-
-    <template id="tpl-cmd-loop">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <span class="text-red-500 text-3xl font-bold mr-4">[ ]</span>
-          <h2 class="text-2xl font-bold text-gray-800">Laço de repetição</h2>
-        </div>
-        <p class="text-gray-700 mb-4">
-          <code class="op">[</code> e <code class="op">]</code> formam o único mecanismo de controle de fluxo do Brainfuck:
-        </p>
-        <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
-          <li><code>[</code> — se a célula atual for <strong>0</strong>, pula para depois do <code>]</code> correspondente</li>
-          <li><code>]</code> — se a célula atual for <strong>diferente de 0</strong>, volta para o <code>[</code> correspondente</li>
-        </ul>
-        <div class="code-block-wrapper">
-          <div class="code-block-header">
-            <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
-            <span class="file-label">exemplo.bf</span>
-          </div>
-          <div class="code-block"><pre><span class="op">+++++</span>       <span class="comment">célula 0 = 5</span>
-<span class="op">[</span>           <span class="comment">enquanto célula 0 != 0:</span>
-  <span class="op">&gt;+&lt;</span>       <span class="comment">  incrementa célula 1, volta para célula 0</span>
-  <span class="op">-</span>         <span class="comment">  decrementa célula 0</span>
-<span class="op">]</span>           <span class="comment">repete até célula 0 = 0</span>
-<span class="comment">Resultado: célula 1 = 5 (copiamos o valor!)</span></pre></div>
-        </div>
-        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-2">
-          <p class="text-sm text-yellow-800"><i class="fas fa-exclamation-triangle mr-2"></i>O padrão <code>[-]</code> é o jeito idiomático de zerar uma célula: decrementa até chegar a 0.</p>
-        </div>
+      <p class="text-gray-700 mb-4">
+        Brainfuck opera sobre uma <strong>fita</strong> (array) de células de memória, cada uma iniciando em <code>0</code>. Um <strong>ponteiro</strong> aponta para a célula atual e pode ser movido para esquerda ou direita.
+      </p>
+      <div class="overflow-x-auto mb-4">
+        <table class="w-full text-center border border-gray-300 rounded">
+          <thead class="bg-green-100">
+            <tr>
+              <th class="border px-4 py-2">Índice</th>
+              <th class="border px-4 py-2">0</th>
+              <th class="border px-4 py-2 bg-green-300">1 ← ponteiro</th>
+              <th class="border px-4 py-2">2</th>
+              <th class="border px-4 py-2">3</th>
+              <th class="border px-4 py-2">...</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border px-4 py-2 font-bold">Valor</td>
+              <td class="border px-4 py-2">0</td>
+              <td class="border px-4 py-2 bg-green-200 font-bold">5</td>
+              <td class="border px-4 py-2">0</td>
+              <td class="border px-4 py-2">0</td>
+              <td class="border px-4 py-2">...</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-    </template>
-
-    <template id="tpl-exemplos">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <i class="fas fa-code text-blue-600 text-2xl mr-3"></i>
-          <h2 class="text-2xl font-bold text-gray-800">Exemplos</h2>
-        </div>
-        <p class="text-gray-700 mb-4">Veja os exemplos clássicos no menu à esquerda: <strong>Hello World</strong>, <strong>Somar dois números</strong> e um <strong>Contador com laço</strong>.</p>
+      <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+        <p class="text-sm text-yellow-800"><i class="fas fa-exclamation-triangle mr-2"></i>Quando o valor de uma célula ultrapassa 255, ele volta para 0 (overflow). Da mesma forma, decrementar abaixo de 0 vai para 255.</p>
       </div>
-    </template>
+    </div>
+  </template>
 
-    <template id="tpl-ex-hello">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <i class="fas fa-hand-wave text-blue-600 text-2xl mr-3"></i>
-          <h2 class="text-2xl font-bold text-gray-800">Hello World</h2>
-        </div>
-        <p class="text-gray-700 mb-4">O clássico "Hello, World!" em Brainfuck. Cada letra é construída usando laços para atingir o valor ASCII desejado:</p>
-        <div class="code-block-wrapper">
-          <div class="code-block-header">
-            <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
-            <span class="file-label">hello.bf</span>
-          </div>
-          <div class="code-block"><pre><span class="op">++++++++</span>               <span class="comment">célula 0 = 8</span>
+  <template id="tpl-comandos">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-terminal text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Os 8 Comandos</h2>
+      </div>
+      <p class="text-gray-700 mb-4">Brainfuck possui exatamente 8 comandos. Qualquer outro caractere no código é ignorado e pode ser usado como comentário.</p>
+      <div class="overflow-x-auto">
+        <table class="w-full border border-gray-300 rounded text-sm">
+          <thead class="bg-green-100">
+            <tr>
+              <th class="border px-4 py-2 text-center">Comando</th>
+              <th class="border px-4 py-2">Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">+</td><td class="border px-4 py-2">Incrementa o valor da célula atual em 1</td></tr>
+            <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">-</td><td class="border px-4 py-2">Decrementa o valor da célula atual em 1</td></tr>
+            <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">&gt;</td><td class="border px-4 py-2">Move o ponteiro para a próxima célula (direita)</td></tr>
+            <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">&lt;</td><td class="border px-4 py-2">Move o ponteiro para a célula anterior (esquerda)</td></tr>
+            <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">.</td><td class="border px-4 py-2">Exibe o caractere ASCII da célula atual</td></tr>
+            <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">,</td><td class="border px-4 py-2">Lê um caractere da entrada e armazena na célula atual</td></tr>
+            <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">[</td><td class="border px-4 py-2">Se a célula atual for 0, pula para o <code>]</code> correspondente</td></tr>
+            <tr><td class="border px-4 py-2 text-center font-bold text-red-500 text-lg">]</td><td class="border px-4 py-2">Se a célula atual for diferente de 0, volta para o <code>[</code> correspondente</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-cmd-mais">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <span class="text-red-500 text-4xl font-bold mr-4">+</span>
+        <h2 class="text-2xl font-bold text-gray-800">Incrementar célula</h2>
+      </div>
+      <p class="text-gray-700 mb-4">O comando <code class="op">+</code> adiciona 1 ao valor da célula onde o ponteiro está. Se o valor for 255, voltará para 0 (overflow de byte).</p>
+      <div class="code-block">
+        <pre><span class="comment"># Célula 0 começa em 0</span>
+<span class="op">+++</span>   <span class="comment"># célula 0 agora vale 3</span>
+<span class="op">++</span>    <span class="comment"># célula 0 agora vale 5</span></pre>
+      </div>
+      <div class="bg-green-50 border-l-4 border-green-500 p-4 mt-2">
+        <p class="text-sm text-green-700"><i class="fas fa-info-circle mr-2"></i>É o comando mais usado para construir valores. Use com laços para evitar escrever <code>+</code> muitas vezes.</p>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-cmd-menos">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <span class="text-red-500 text-4xl font-bold mr-4">-</span>
+        <h2 class="text-2xl font-bold text-gray-800">Decrementar célula</h2>
+      </div>
+      <p class="text-gray-700 mb-4">O comando <code class="op">-</code> subtrai 1 do valor da célula atual. Se chegar a -1, volta para 255 (underflow).</p>
+      <div class="code-block">
+        <pre><span class="comment"># Célula 0 = 5</span>
+<span class="op">-----</span>   <span class="comment"># célula 0 agora vale 0</span></pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-cmd-direita">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <span class="text-red-500 text-4xl font-bold mr-4">&gt;</span>
+        <h2 class="text-2xl font-bold text-gray-800">Mover ponteiro para direita</h2>
+      </div>
+      <p class="text-gray-700 mb-4">O comando <code class="op">&gt;</code> move o ponteiro uma célula para a direita na fita.</p>
+      <div class="code-block">
+        <pre><span class="comment"># Ponteiro na célula 0</span>
+<span class="op">&gt;</span>      <span class="comment"># agora ponteiro está na célula 1</span>
+<span class="op">&gt;</span>      <span class="comment"># agora ponteiro está na célula 2</span></pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-cmd-esquerda">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <span class="text-red-500 text-4xl font-bold mr-4">&lt;</span>
+        <h2 class="text-2xl font-bold text-gray-800">Mover ponteiro para esquerda</h2>
+      </div>
+      <p class="text-gray-700 mb-4">O comando <code class="op">&lt;</code> move o ponteiro uma célula para a esquerda. Não use na célula 0 ou causará erro na maioria dos interpretadores.</p>
+      <div class="code-block">
+        <pre><span class="comment"># Ponteiro na célula 2</span>
+<span class="op">&lt;</span>      <span class="comment"># volta para célula 1</span>
+<span class="op">&lt;</span>      <span class="comment"># volta para célula 0</span></pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-cmd-saida">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <span class="text-red-500 text-4xl font-bold mr-4">.</span>
+        <h2 class="text-2xl font-bold text-gray-800">Saída de dados</h2>
+      </div>
+      <p class="text-gray-700 mb-4">O comando <code class="op">.</code> imprime o caractere cujo código ASCII corresponde ao valor da célula atual.</p>
+      <div class="code-block">
+        <pre><span class="comment"># Célula 0 = 72 (ASCII de 'H')</span>
+<span class="op">++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</span>
+<span class="op">.</span>      <span class="comment"># imprime 'H'</span></pre>
+      </div>
+      <div class="bg-green-50 border-l-4 border-green-500 p-4 mt-2">
+        <p class="text-sm text-green-700"><i class="fas fa-info-circle mr-2"></i>Para imprimir múltiplos caracteres, use vários <code>.</code> ou construa os valores com laços.</p>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-cmd-entrada">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <span class="text-red-500 text-4xl font-bold mr-4">,</span>
+        <h2 class="text-2xl font-bold text-gray-800">Entrada de dados</h2>
+      </div>
+      <p class="text-gray-700 mb-4">O comando <code class="op">,</code> lê um único caractere da entrada padrão e armazena seu código ASCII na célula atual.</p>
+      <div class="code-block">
+        <pre><span class="op">,</span>      <span class="comment"># lê um caractere do usuário e guarda na célula 0</span>
+<span class="op">.</span>      <span class="comment"># exibe o mesmo caractere de volta (eco)</span></pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-cmd-loop">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <span class="text-red-500 text-3xl font-bold mr-4">[ ]</span>
+        <h2 class="text-2xl font-bold text-gray-800">Laço de repetição</h2>
+      </div>
+      <p class="text-gray-700 mb-4">
+        <code class="op">[</code> e <code class="op">]</code> formam o único mecanismo de controle de fluxo do Brainfuck:
+      </p>
+      <ul class="list-disc list-inside text-gray-700 mb-4 space-y-1">
+        <li><code>[</code> -> se a célula atual for <strong>0</strong>, pula para depois do <code>]</code> correspondente</li>
+        <li><code>]</code> -> se a célula atual for <strong>diferente de 0</strong>, volta para o <code>[</code> correspondente</li>
+      </ul>
+      <div class="code-block">
+        <pre><span class="op">+++++</span>       <span class="comment"># célula 0 = 5</span>
+<span class="op">[</span>           <span class="comment"># enquanto célula 0 != 0:</span>
+  <span class="op">&gt;+&lt;</span>       <span class="comment">#   incrementa célula 1, volta para célula 0</span>
+  <span class="op">-</span>         <span class="comment">#   decrementa célula 0</span>
+<span class="op">]</span>           <span class="comment"># repete até célula 0 = 0</span>
+<span class="comment"># Resultado: célula 1 = 5 (copiamos o valor!)</span></pre>
+      </div>
+      <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-2">
+        <p class="text-sm text-yellow-800"><i class="fas fa-exclamation-triangle mr-2"></i>O padrão <code>[-]</code> é o jeito idiomático de zerar uma célula: decrementa até chegar a 0.</p>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-exemplos">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-code text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Exemplos</h2>
+      </div>
+      <p class="text-gray-700 mb-4">Veja os exemplos clássicos no menu à esquerda: <strong>Hello World</strong>, <strong>Somar dois números</strong> e um <strong>Contador com laço</strong>.</p>
+    </div>
+  </template>
+
+  <template id="tpl-ex-hello">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-hand-wave text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Hello World</h2>
+      </div>
+      <p class="text-gray-700 mb-4">O clássico "Hello, World!" em Brainfuck. Cada letra é construída usando laços para atingir o valor ASCII desejado:</p>
+      <div class="code-block">
+        <pre><span class="op">++++++++</span>               <span class="comment"># célula 0 = 8</span>
 <span class="op">[</span>
-  <span class="op">&gt;++++</span>               <span class="comment">célula 1 += 4</span>
+  <span class="op">&gt;++++</span>               <span class="comment"># célula 1 += 4</span>
   <span class="op">[</span>
     <span class="op">&gt;++&gt;+++&gt;+++&gt;+&lt;&lt;&lt;&lt;-</span>
   <span class="op">]</span>
   <span class="op">&gt;+&gt;+&gt;-&gt;&gt;+</span>
   <span class="op">[&lt;]&lt;-</span>
 <span class="op">]</span>
-<span class="op">&gt;&gt;.</span>                     <span class="comment">H</span>
-<span class="op">&gt;---.</span>                   <span class="comment">e</span>
-<span class="op">+++++++..</span>               <span class="comment">ll</span>
-<span class="op">+++.</span>                    <span class="comment">o</span>
-<span class="op">&gt;&gt;.</span>                     <span class="comment">,</span>
-<span class="op">&lt;-.</span>                     <span class="comment">(espaço)</span>
-<span class="op">&lt;.</span>                      <span class="comment">W</span>
-<span class="op">+++.</span>                    <span class="comment">o</span>
-<span class="op">------.</span>                 <span class="comment">r</span>
-<span class="op">--------.</span>               <span class="comment">l</span>
-<span class="op">&gt;&gt;+.</span>                    <span class="comment">d</span>
-<span class="op">&gt;++.</span>                    <span class="comment">!</span></pre></div>
-        </div>
-        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mt-2">
-          <p class="text-sm text-blue-700">Este é um dos programas mais famosos em Brainfuck. Usa laços aninhados para calcular os valores ASCII de cada letra de forma eficiente.</p>
-        </div>
+<span class="op">&gt;&gt;.</span>                     <span class="comment"># H</span>
+<span class="op">&gt;---.</span>                   <span class="comment"># e</span>
+<span class="op">+++++++..</span>               <span class="comment"># ll</span>
+<span class="op">+++.</span>                    <span class="comment"># o</span>
+<span class="op">&gt;&gt;.</span>                     <span class="comment"># ,</span>
+<span class="op">&lt;-.</span>                     <span class="comment"># (espaço)</span>
+<span class="op">&lt;.</span>                      <span class="comment"># W</span>
+<span class="op">+++.</span>                    <span class="comment"># o</span>
+<span class="op">------.</span>                 <span class="comment"># r</span>
+<span class="op">--------.</span>               <span class="comment"># l</span>
+<span class="op">&gt;&gt;+.</span>                    <span class="comment"># d</span>
+<span class="op">&gt;++.</span>                    <span class="comment"># !</span></pre>
       </div>
-    </template>
+      <div class="bg-green-50 border-l-4 border-green-500 p-4 mt-2">
+        <p class="text-sm text-green-700">Este é um dos programas mais famosos em Brainfuck. Usa laços aninhados para calcular os valores ASCII de cada letra de forma eficiente.</p>
+      </div>
+    </div>
+  </template>
 
-    <template id="tpl-ex-soma">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <i class="fas fa-plus text-blue-600 text-2xl mr-3"></i>
-          <h2 class="text-2xl font-bold text-gray-800">Somar dois números</h2>
-        </div>
-        <p class="text-gray-700 mb-4">Somando 3 + 5 e exibindo o resultado (valor 8, que não é um caractere visível, mas o princípio é demonstrado):</p>
-        <div class="code-block-wrapper">
-          <div class="code-block-header">
-            <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
-            <span class="file-label">soma.bf</span>
-          </div>
-          <div class="code-block"><pre><span class="op">+++</span>         <span class="comment">célula 0 = 3</span>
-<span class="op">&gt;+++++</span>      <span class="comment">célula 1 = 5</span>
-<span class="op">[&lt;+&gt;-]</span>     <span class="comment">enquanto célula 1 != 0: célula 0++, célula 1--</span>
-<span class="comment">Resultado: célula 0 = 8, célula 1 = 0</span>
-<span class="op">&lt;</span>           <span class="comment">volta para célula 0</span>
+  <template id="tpl-ex-soma">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-plus text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Somar dois números</h2>
+      </div>
+      <p class="text-gray-700 mb-4">Somando 3 + 5 e exibindo o resultado como dígito:</p>
+      <div class="code-block">
+        <pre><span class="op">+++</span>         <span class="comment"># célula 0 = 3</span>
+<span class="op">&gt;+++++</span>      <span class="comment"># célula 1 = 5</span>
+<span class="op">[&lt;+&gt;-]</span>     <span class="comment"># enquanto célula 1 != 0: célula 0++, célula 1--</span>
+<span class="comment"># Resultado: célula 0 = 8, célula 1 = 0</span>
+<span class="op">&lt;</span>           <span class="comment"># volta para célula 0</span>
 
-<span class="comment">Para exibir como dígito ASCII, somamos 48 (ASCII de '0'):</span>
+<span class="comment"># Para exibir como dígito ASCII, some 48 (ASCII de '0'):</span>
 <span class="op">++++++++++++++++++++++++++++++++++++++++++++++++</span>
-<span class="comment">48 sinais + (célula 0 agora = 56, ASCII de '8')</span>
-<span class="op">.</span>           <span class="comment">exibe: 8</span></pre></div>
-        </div>
+<span class="comment"># 48 sinais + (célula 0 agora = 56, ASCII de '8
+')</span>
+<span class="op">.</span>           <span class="comment"># exibe: 8</span></pre>
       </div>
-    </template>
+    </div>
+  </template>
 
-    <template id="tpl-ex-loop">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <i class="fas fa-sync text-blue-600 text-2xl mr-3"></i>
-          <h2 class="text-2xl font-bold text-gray-800">Contador com laço</h2>
-        </div>
-        <p class="text-gray-700 mb-4">Exibe os caracteres ASCII de 'A' (65) até 'E' (69) usando um laço:</p>
-        <div class="code-block-wrapper">
-          <div class="code-block-header">
-            <span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span>
-            <span class="file-label">contador.bf</span>
-          </div>
-          <div class="code-block"><pre><span class="op">&gt;+++++</span>       <span class="comment">célula 1 = 5 (contador de 5 letras)</span>
-<span class="op">&lt;</span>            <span class="comment">volta para célula 0</span>
-
-<span class="comment">célula 0 começa em 65 (ASCII de 'A')</span>
+  <template id="tpl-ex-loop">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-sync text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Contador com laço</h2>
+      </div>
+      <p class="text-gray-700 mb-4">Exibe os caracteres ASCII de 'A' (65) até 'E' (69) usando um laço simples:</p>
+      <div class="code-block">
+        <pre><span class="comment"># célula 0 começa em 65 (ASCII de 'A')</span>
 <span class="op">+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++</span>
-<span class="comment">65 sinais +</span>
+<span class="comment"># 65 sinais +</span>
 
-<span class="op">[&gt;[.&gt;]&lt;&lt;+&gt;&gt;-]</span>  <span class="comment">Versão simplificada do conceito</span>
-
-<span class="comment">Versão didática mais clara:</span>
-<span class="op">.</span>            <span class="comment">A (65)</span>
-<span class="op">+.</span>           <span class="comment">B (66)</span>
-<span class="op">+.</span>           <span class="comment">C (67)</span>
-<span class="op">+.</span>           <span class="comment">D (68)</span>
-<span class="op">+.</span>           <span class="comment">E (69)</span></pre></div>
-        </div>
+<span class="op">.</span>            <span class="comment"># A (65)</span>
+<span class="op">+.</span>           <span class="comment"># B (66)</span>
+<span class="op">+.</span>           <span class="comment"># C (67)</span>
+<span class="op">+.</span>           <span class="comment"># D (68)</span>
+<span class="op">+.</span>           <span class="comment"># E (69)</span></pre>
       </div>
-    </template>
+    </div>
+  </template>
 
-    <template id="tpl-dicas">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <i class="fas fa-lightbulb text-blue-600 text-2xl mr-3"></i>
-          <h2 class="text-2xl font-bold text-gray-800">Dicas e Padrões Comuns</h2>
-        </div>
-        <div class="space-y-4">
-          <div class="bg-gray-50 rounded p-4 border">
-            <h3 class="font-bold text-blue-700 mb-2">Zerar uma célula</h3>
-            <div class="code-block-wrapper"><div class="code-block-header"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span><span class="file-label">pattern.bf</span></div>
-            <div class="code-block"><pre><span class="op">[-]</span>   <span class="comment">decrementa até 0 — zera qualquer célula</span></pre></div></div>
+  <template id="tpl-dicas">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-lightbulb text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Dicas e Padrões Comuns</h2>
+      </div>
+      <div class="space-y-4">
+        <div class="bg-gray-50 rounded p-4 border">
+          <h3 class="font-bold text-green-700 mb-2">Zerar uma célula</h3>
+          <div class="code-block">
+            <pre><span class="op">[-]</span>   <span class="comment"># decrementa até 0 — zera qualquer célula</span></pre>
           </div>
-          <div class="bg-gray-50 rounded p-4 border">
-            <h3 class="font-bold text-blue-700 mb-2">Copiar valor de uma célula para outra</h3>
-            <div class="code-block-wrapper"><div class="code-block-header"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span><span class="file-label">pattern.bf</span></div>
-            <div class="code-block"><pre><span class="comment">Copia célula 0 para célula 1 (destrói o original)</span>
+        </div>
+        <div class="bg-gray-50 rounded p-4 border">
+          <h3 class="font-bold text-green-700 mb-2">Copiar valor de uma célula para outra</h3>
+          <div class="code-block">
+            <pre><span class="comment"># Copia célula 0 para célula 1 (destrói o original)</span>
 <span class="op">[&gt;+&lt;-]</span>
 
-<span class="comment">Copia célula 0 para célula 1 preservando o original (usa célula 2 como temp)</span>
-<span class="op">[&gt;+&gt;+&lt;&lt;-]&gt;&gt;[&lt;&lt;+&gt;&gt;-]</span></pre></div></div>
-          </div>
-          <div class="bg-gray-50 rounded p-4 border">
-            <h3 class="font-bold text-blue-700 mb-2">Multiplicar</h3>
-            <div class="code-block-wrapper"><div class="code-block-header"><span class="dot dot-red"></span><span class="dot dot-yellow"></span><span class="dot dot-green"></span><span class="file-label">pattern.bf</span></div>
-            <div class="code-block"><pre><span class="comment">Multiplica células 0 e 1, resultado na célula 2</span>
-<span class="op">[&gt;[&gt;+&gt;+&lt;&lt;-]&gt;&gt;[&lt;&lt;+&gt;&gt;-]&lt;&lt;&lt;-]</span></pre></div></div>
-          </div>
-          <div class="bg-blue-50 border-l-4 border-blue-500 p-4">
-            <p class="text-sm text-blue-700"><i class="fas fa-info-circle mr-2"></i>Comentários em Brainfuck: qualquer caractere que não seja <code>+ - &gt; &lt; . , [ ]</code> é ignorado pelo interpretador, portanto pode ser usado livremente como comentário ou espaçamento.</p>
+<span class="comment"># Copia célula 0 para célula 1 preservando o original (usa célula 2 como temp)</span>
+<span class="op">[&gt;+&gt;+&lt;&lt;-]&gt;&gt;[&lt;&lt;+&gt;&gt;-]</span></pre>
           </div>
         </div>
-      </div>
-    </template>
-
-    <template id="tpl-documentacao">
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <div class="flex items-center mb-4">
-          <i class="fas fa-external-link-alt text-blue-600 text-2xl mr-3"></i>
-          <h2 class="text-2xl font-bold text-gray-800">Leitura Recomendada</h2>
+        <div class="bg-gray-50 rounded p-4 border">
+          <h3 class="font-bold text-green-700 mb-2">Multiplicar</h3>
+          <div class="code-block">
+            <pre><span class="comment"># Multiplica células 0 e 1, resultado na célula 2</span>
+<span class="op">[&gt;[&gt;+&gt;+&lt;&lt;-]&gt;&gt;[&lt;&lt;+&gt;&gt;-]&lt;&lt;&lt;-]</span></pre>
+          </div>
         </div>
-        <ul class="space-y-3 text-gray-700">
-          <li><a href="https://esolangs.org/wiki/Brainfuck" target="_blank" class="text-blue-600 hover:underline"><i class="fas fa-link mr-2"></i>Esolangs Wiki — Brainfuck (referência completa)</a></li>
-          <li><a href="https://pt.wikipedia.org/wiki/Brainfuck" target="_blank" class="text-blue-600 hover:underline"><i class="fas fa-link mr-2"></i>Wikipedia — Brainfuck (pt-br)</a></li>
-          <li><a href="https://copy.sh/brainfuck/" target="_blank" class="text-blue-600 hover:underline"><i class="fas fa-link mr-2"></i>Interpretador online de Brainfuck</a></li>
-          <li><a href="https://www.nayuki.io/page/brainfuck-interpreter-javascript" target="_blank" class="text-blue-600 hover:underline"><i class="fas fa-link mr-2"></i>Interpretador Brainfuck em JavaScript</a></li>
-        </ul>
+        <div class="bg-green-50 border-l-4 border-green-500 p-4">
+          <p class="text-sm text-green-700"><i class="fas fa-info-circle mr-2"></i>Comentários em Brainfuck: qualquer caractere que não seja <code>+ - &gt; &lt; . , [ ]</code> é ignorado pelo interpretador, portanto pode ser usado livremente como comentário ou espaçamento.</p>
+        </div>
       </div>
-    </template>
+    </div>
+  </template>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const templates = {};
-        document.querySelectorAll("template").forEach((t) => {
-          templates[t.id.replace("tpl-", "")] = t.innerHTML;
-        });
+  <template id="tpl-documentacao">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-external-link-alt text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Leitura Recomendada</h2>
+      </div>
+      <ul class="space-y-3 text-gray-700">
+        <li><a href="https://esolangs.org/wiki/Brainfuck" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>Esolangs Wiki -> Brainfuck (referência completa)</a></li>
+        <li><a href="https://pt.wikipedia.org/wiki/Brainfuck" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>Wikipedia -> Brainfuck (pt-br)</a></li>
+        <li><a href="https://copy.sh/brainfuck/" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>Interpretador online de Brainfuck</a></li>
+        <li><a href="https://www.nayuki.io/page/brainfuck-interpreter-javascript" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>Interpretador Brainfuck em JavaScript</a></li>
+      </ul>
+    </div>
+  </template>
 
-        const contentDiv = document.getElementById("explanation");
-        const navLinks = document.querySelectorAll(".nav-link");
-        const dropdownBtns = document.querySelectorAll(".dropdown-btn");
-        const searchInput = document.querySelector('input[type="text"]');
-        const searchResults = document.getElementById("search-results");
+  <script>
+    const templates = {
+      "introducao":      "tpl-introducao",
+      "modelo":          "tpl-modelo",
+      "comandos":        "tpl-comandos",
+      "cmd-mais":        "tpl-cmd-mais",
+      "cmd-menos":       "tpl-cmd-menos",
+      "cmd-direita":     "tpl-cmd-direita",
+      "cmd-esquerda":    "tpl-cmd-esquerda",
+      "cmd-saida":       "tpl-cmd-saida",
+      "cmd-entrada":     "tpl-cmd-entrada",
+      "cmd-loop":        "tpl-cmd-loop",
+      "exemplos":        "tpl-exemplos",
+      "ex-hello":        "tpl-ex-hello",
+      "ex-soma":         "tpl-ex-soma",
+      "ex-loop":         "tpl-ex-loop",
+      "dicas":           "tpl-dicas",
+      "documentacao":    "tpl-documentacao",
+    };
 
-        const mobileMenuBtn = document.getElementById("mobile-menu-btn");
-        const closeSidebarBtn = document.getElementById("close-sidebar-btn");
-        const sidebar = document.getElementById("sidebar");
-        const sidebarOverlay = document.getElementById("sidebar-overlay");
+    function loadSection(sectionId) {
+      const tplId = templates[sectionId];
+      if (!tplId) return;
+      const tpl = document.getElementById(tplId);
+      if (!tpl) return;
+      const el = document.getElementById("explanation");
+      el.innerHTML = "";
+      el.appendChild(tpl.content.cloneNode(true));
+      localStorage.setItem("bf-activeSectionId", sectionId);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 
-        function openSidebar() {
-          sidebar.classList.remove("-translate-x-full");
-          sidebarOverlay.classList.remove("hidden");
-          document.body.classList.add("overflow-hidden");
-        }
-        function closeSidebar() {
-          sidebar.classList.add("-translate-x-full");
-          sidebarOverlay.classList.add("hidden");
-          document.body.classList.remove("overflow-hidden");
-        }
+    function initDropdowns(container) {
+      container.querySelectorAll(".dropdown-btn").forEach((button) => {
+        button.addEventListener("click", (e) => {
+          e.preventDefault();
+          const dropdownContent = button.nextElementSibling;
+          const icon = button.querySelector("i:last-child");
 
-        if (mobileMenuBtn) mobileMenuBtn.addEventListener("click", openSidebar);
-        if (closeSidebarBtn) closeSidebarBtn.addEventListener("click", closeSidebar);
-        if (sidebarOverlay) sidebarOverlay.addEventListener("click", closeSidebar);
+          dropdownContent.classList.toggle("open");
+          icon.classList.toggle("rotate-90");
 
-        function loadSection(sectionId) {
-          if (templates[sectionId]) {
-            contentDiv.innerHTML = templates[sectionId];
-            navLinks.forEach((l) => l.classList.remove("bg-blue-100", "font-bold"));
-            const active = document.querySelector(`.nav-link[data-section="${sectionId}"]`);
-            if (active) active.classList.add("bg-blue-100", "font-bold");
-            localStorage.setItem("bf-activeSectionId", sectionId);
-          }
-        }
-
-        navLinks.forEach((link) => {
-          link.addEventListener("click", (e) => {
-            e.preventDefault();
-            loadSection(link.dataset.section);
-            if (window.innerWidth < 768) closeSidebar();
+          container.querySelectorAll(".dropdown-content").forEach((content) => {
+            if (content !== dropdownContent && content.classList.contains("open")) {
+              content.classList.remove("open");
+              content.previousElementSibling
+                .querySelector("i:last-child")
+                .classList.remove("rotate-90");
+            }
           });
+          const section = button.getAttribute("data-section");
+          if (section) loadSection(section);
         });
-
-        dropdownBtns.forEach((btn) => {
-          btn.addEventListener("click", (e) => {
-            e.preventDefault();
-            const content = btn.nextElementSibling;
-            const icon = btn.querySelector(".fa-chevron-right");
-            content.classList.toggle("open");
-            icon.style.transform = content.classList.contains("open") ? "rotate(90deg)" : "rotate(0deg)";
-            const section = btn.getAttribute("data-section");
-            if (section) loadSection(section);
-          });
-        });
-
-        searchInput.addEventListener("input", (e) => {
-          const query = e.target.value.toLowerCase();
-          searchResults.innerHTML = "";
-          if (query.length > 1) {
-            navLinks.forEach((link) => {
-              const text = link.textContent.toLowerCase();
-              const expl = (link.dataset.explanation || "").toLowerCase();
-              if (text.includes(query) || expl.includes(query)) {
-                const div = document.createElement("div");
-                div.className = "p-2 hover:bg-gray-100 cursor-pointer";
-                div.textContent = link.textContent.trim();
-                div.addEventListener("click", () => {
-                  loadSection(link.dataset.section);
-                  searchResults.classList.add("hidden");
-                  searchInput.value = "";
-                  if (window.innerWidth < 768) closeSidebar();
-                });
-                searchResults.appendChild(div);
-              }
-            });
-            searchResults.classList.remove("hidden");
-          } else {
-            searchResults.classList.add("hidden");
-          }
-        });
-
-        document.addEventListener("click", (e) => {
-          if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
-            searchResults.classList.add("hidden");
-          }
-        });
-        const parentMap = {
-          "cmd-mais": "dd-comandos", "cmd-menos": "dd-comandos",
-          "cmd-direita": "dd-comandos", "cmd-esquerda": "dd-comandos",
-          "cmd-saida": "dd-comandos", "cmd-entrada": "dd-comandos",
-          "cmd-loop": "dd-comandos",
-          "ex-hello": "dd-exemplos", "ex-soma": "dd-exemplos", "ex-loop": "dd-exemplos",
-        };
-
-        const last = localStorage.getItem("bf-activeSectionId");
-        const toLoad = last && templates[last] ? last : "introducao";
-
-        const parentId = parentMap[toLoad];
-        if (parentId) {
-          const dd = document.getElementById(parentId);
-          if (dd) {
-            dd.classList.add("open");
-            const icon = dd.previousElementSibling?.querySelector(".fa-chevron-right");
-            if (icon) icon.style.transform = "rotate(90deg)";
-          }
-        }
-        loadSection(toLoad);
       });
-    </script>
-  </body>
-</html> 
+    }
+
+    function initNavLinks(container) {
+      container.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const section = link.getAttribute("data-section");
+          if (section) {
+            loadSection(section);
+            document.getElementById("mobile-drawer").classList.remove("open");
+            document.getElementById("mobile-overlay").classList.remove("open");
+          }
+        });
+      });
+    }
+    const hamburger = document.getElementById("hamburger-btn");
+    const drawer = document.getElementById("mobile-drawer");
+    const overlay = document.getElementById("mobile-overlay");
+    const closeBtn = document.getElementById("close-drawer");
+    const mobileNavContainer = document.getElementById("mobile-nav-container");
+
+    hamburger.addEventListener("click", () => {
+      if (mobileNavContainer.innerHTML.trim() === "") {
+        const navClone = document.getElementById("main-nav").cloneNode(true);
+        navClone.id = "mobile-nav";
+        mobileNavContainer.appendChild(navClone);
+        initDropdowns(mobileNavContainer);
+        initNavLinks(mobileNavContainer);
+      }
+      drawer.classList.add("open");
+      overlay.classList.add("open");
+    });
+
+    const closeDrawer = () => {
+      drawer.classList.remove("open");
+      overlay.classList.remove("open");
+    };
+
+    closeBtn.addEventListener("click", closeDrawer);
+    overlay.addEventListener("click", closeDrawer);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const input = document.querySelector('input[type="text"]');
+      const resultsContainer = document.getElementById("search-results");
+
+      input.addEventListener("input", () => {
+        const query = input.value.toLowerCase().trim();
+        resultsContainer.innerHTML = "";
+
+        if (query.length < 2) {
+          resultsContainer.classList.add("hidden");
+          return;
+        }
+
+        const links = document.querySelectorAll("#main-nav .nav-link");
+        const matches = [];
+
+        links.forEach((link) => {
+          const text = link.textContent.toLowerCase().trim();
+          const explanation = link.getAttribute("data-explanation") || "";
+          if (text.includes(query) || explanation.toLowerCase().includes(query)) {
+            matches.push({ element: link, text: link.textContent.trim() });
+          }
+        });
+
+        if (matches.length === 0) {
+          resultsContainer.innerHTML = "<p class='p-2 text-gray-500'>Nenhum resultado encontrado.</p>";
+        } else {
+          matches.forEach((match) => {
+            const item = document.createElement("div");
+            item.className = "search-result-item";
+            item.innerText = match.text;
+            item.addEventListener("click", () => {
+              match.element.click();
+              resultsContainer.classList.add("hidden");
+              input.value = "";
+            });
+            resultsContainer.appendChild(item);
+          });
+        }
+
+        resultsContainer.classList.remove("hidden");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!input.contains(e.target) && !resultsContainer.contains(e.target)) {
+          resultsContainer.classList.add("hidden");
+        }
+      });
+
+      initDropdowns(document.getElementById("sidebar"));
+      initNavLinks(document.getElementById("sidebar"));
+
+      const lastSection = localStorage.getItem("bf-activeSectionId");
+      const sectionToLoad = lastSection && templates[lastSection] ? lastSection : "introducao";
+
+      const parentDropdownMap = {
+        "cmd-mais": "dd-comandos", "cmd-menos": "dd-comandos",
+        "cmd-direita": "dd-comandos", "cmd-esquerda": "dd-comandos",
+        "cmd-saida": "dd-comandos", "cmd-entrada": "dd-comandos",
+        "cmd-loop": "dd-comandos",
+        "ex-hello": "dd-exemplos", "ex-soma": "dd-exemplos", "ex-loop": "dd-exemplos",
+      };
+      const parentId = parentDropdownMap[sectionToLoad];
+      if (parentId) {
+        const dd = document.getElementById(parentId);
+        if (dd) {
+          dd.classList.add("open");
+          const btn = dd.previousElementSibling;
+          if (btn) btn.querySelector("i:last-child")?.classList.add("rotate-90");
+        }
+      }
+      loadSection(sectionToLoad);
+    });
+  </script>
+</body>
+</html>
