@@ -1,1 +1,1356 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Suporte de Informática: Referência da Linguagem C++</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-card: #1a1a1a;
+      --bg-card-hover: #222222;
+      --bg-sidebar: #111111;
+      --bg-dropdown: #181818;
+      --text-primary: #f5f5f5;
+      --text-secondary: #a0a0a0;
+      --text-muted: #666666;
+      --accent: #00a651;
+      --accent-hover: #00c45f;
+      --accent-dim: rgba(0, 166, 81, 0.12);
+      --border: #2a2a2a;
+      --border-hover: #333333;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: all 0.25s ease;
+    }
 
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .topbar {
+      background: linear-gradient(180deg, #111111 0%, var(--bg-primary) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+    }
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+    .topbar a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .topbar a:hover { color: var(--accent-hover); }
+
+    .brand-header {
+      background: linear-gradient(180deg, #111111 0%, var(--bg-primary) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .header-title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .brand-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .brand-header i { color: var(--accent); font-size: 1.6rem; }
+
+    .search-wrapper { position: relative; }
+    .search-input {
+      padding: 0.6rem 2.5rem 0.6rem 1rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      width: 220px;
+      transition: var(--transition);
+    }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+    .search-btn {
+      position: absolute;
+      right: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    #search-results {
+      position: absolute;
+      left: 0;
+      top: calc(100% + 0.5rem);
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow);
+      z-index: 200;
+      overflow: hidden;
+    }
+    #search-results.hidden { display: none; }
+    .search-result-item {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      border-bottom: 1px solid var(--border);
+    }
+    .search-result-item:last-child { border-bottom: none; }
+    .search-result-item:hover {
+      background: var(--accent-dim);
+      color: var(--accent-hover);
+    }
+
+    #hamburger-btn {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
+    #hamburger-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    #mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 300;
+      backdrop-filter: blur(4px);
+    }
+    #mobile-overlay.open { display: block; }
+
+    #mobile-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300px;
+      background: var(--bg-sidebar);
+      z-index: 400;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+    }
+    #mobile-drawer.open { transform: translateX(0); }
+    .drawer-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .drawer-header h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    #close-drawer {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    #close-drawer:hover { color: var(--accent); }
+    #mobile-nav-container { padding: 0.75rem; }
+
+    main { flex: 1; }
+    .main-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem;
+      display: flex;
+      gap: 2rem;
+    }
+
+    #sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      height: fit-content;
+      position: sticky;
+      top: 100px;
+      box-shadow: var(--shadow-sm);
+    }
+    .sidebar-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-header h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    #main-nav { padding: 0.75rem; }
+
+    .nav-section { margin-bottom: 0.5rem; }
+    .nav-link, .dropdown-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.7rem 0.9rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+    .nav-link:hover, .dropdown-btn:hover {
+      background: var(--accent-dim);
+      color: var(--accent-hover);
+    }
+    .nav-link i, .dropdown-btn i { width: 18px; text-align: center; }
+    .dropdown-btn i:last-child {
+      position: absolute;
+      right: 0.75rem;
+      font-size: 0.7rem;
+      transition: transform 0.3s ease;
+    }
+    .dropdown-btn i.rotate-90 { transform: rotate(90deg); }
+
+    .dropdown-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      padding-left: 0.5rem;
+    }
+    .dropdown-content.open { max-height: 1000px; }
+    .dropdown-content .nav-link {
+      font-size: 0.85rem;
+      padding: 0.55rem 0.9rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .sidebar-resources {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .sidebar-resources h3 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+      padding: 0 0.9rem;
+    }
+    .sidebar-resources ul { list-style: none; }
+    .sidebar-resources li { margin-bottom: 0.15rem; }
+    .sidebar-resources a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.9rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+    .sidebar-resources a:hover {
+      color: var(--accent-hover);
+      background: var(--accent-dim);
+    }
+
+    #content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .content-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .content-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow);
+    }
+    .content-card h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .content-card h2 i { color: var(--accent); font-size: 1.3rem; }
+    .content-card p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+    .content-card p:last-child { margin-bottom: 0; }
+    .content-card strong { color: var(--text-primary); }
+    .content-card code {
+      background: var(--bg-secondary);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: var(--accent-hover);
+      border: 1px solid var(--border);
+    }
+
+    .code-block {
+      font-family: 'Fira Code', 'Courier New', monospace;
+      background: #0d0d0d;
+      color: #d4d4d4;
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      border: 1px solid var(--border);
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .keyword  { color: #569cd6; }
+    .string   { color: #ce9178; }
+    .comment  { color: #6a9955; font-style: italic; }
+    .function { color: #dcdcaa; }
+    .type     { color: #4ec9b0; }
+    .pp       { color: #c586c0; }
+    .number   { color: #b5cea8; }
+    .info-box {
+      background: var(--accent-dim);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+    }
+    .info-box h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent-hover);
+      margin-bottom: 0.5rem;
+    }
+    .info-box ul {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      padding-left: 1.2rem;
+    }
+    .info-box li { margin-bottom: 0.25rem; }
+    .info-box i { color: var(--accent); margin-right: 0.5rem; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .grid-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .grid-item:hover { border-color: var(--accent); }
+    .grid-item strong { color: var(--accent); }
+
+    .content-card a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .content-card a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 1.25rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-divider {
+      width: 60px;
+      height: 2px;
+      background: var(--accent);
+      margin: 0 auto 1rem;
+      border-radius: 1px;
+      opacity: 0.6;
+    }
+    footer p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0.5rem; }
+    footer .credits { font-weight: 600; color: var(--text-primary); }
+    footer a { color: var(--accent); text-decoration: none; transition: color 0.2s ease; }
+    footer a:hover { color: var(--accent-hover); }
+    .institution { font-size: 0.78rem !important; color: var(--text-muted) !important; margin-top: 0.75rem; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    @media (max-width: 900px) {
+      #sidebar { display: none; }
+      #hamburger-btn { display: block; }
+      .main-layout { padding: 1.25rem; gap: 0; }
+      .brand-header h1 { font-size: 1.1rem; }
+      .search-input { width: 160px; font-size: 0.85rem; }
+      .content-card { padding: 1.25rem; }
+      .content-card h2 { font-size: 1.2rem; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .code-block { padding: 1rem; font-size: 0.82rem; }
+    }
+
+    @media (max-width: 480px) {
+      .brand-header { padding: 1rem; }
+      .brand-header h1 { font-size: 0.95rem; }
+      .search-input { width: 130px; padding: 0.5rem 2rem 0.5rem 0.8rem; }
+      .content-card { padding: 1rem; }
+      .content-card h2 { font-size: 1.1rem; }
+      .code-block { padding: 0.75rem; font-size: 0.78rem; }
+      .grid-item { padding: 0.75rem; font-size: 0.85rem; }
+      .topbar-inner { flex-direction: column; gap: 0.25rem; text-align: center; }
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="mobile-overlay"></div>
+  <div id="mobile-drawer">
+    <div class="drawer-header">
+      <h2>Sumário</h2>
+      <button id="close-drawer">&times;</button>
+    </div>
+    <div id="mobile-nav-container"></div>
+  </div>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span class="hidden sm:inline">IFSULDEMINAS &middot; Campus Poços de Caldas</span>
+      <a href="../../index.html">
+        <i class="fas fa-arrow-left mr-1"></i>  Portal de Aprendizado
+      </a>
+    </div>
+  </div>
+
+  <header class="brand-header">
+    <div class="header-container">
+      <div class="header-title-wrapper">
+        <button id="hamburger-btn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <i class="fas fa-code text-3xl"></i>
+        <h1>Referência da Linguagem C++</h1>
+      </div>
+      <div class="search-wrapper">
+        <div class="relative">
+          <input type="text" placeholder="Pesquisar" class="search-input" />
+          <button class="search-btn"><i class="fas fa-search"></i></button>
+          <div id="search-results" class="hidden"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="main-layout">
+      <div id="sidebar">
+        <div class="sidebar-header">
+          <h1>Sumário</h1>
+        </div>
+        <nav id="main-nav">
+          <div class="nav-section">
+            <a href="#introducao" class="nav-link" data-section="introducao" data-explanation="Introdução à linguagem C++ e seus conceitos básicos.">
+              <i class="fas fa-play"></i>
+              <span>Introdução</span>
+            </a>
+          </div>
+
+          <div class="nav-section">
+            <a href="#tipos" class="dropdown-btn" data-section="tipos" data-explanation="Tipos de dados em C++.">
+              <i class="fas fa-laptop-code"></i>
+              <span>Tipos de Dados</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <div id="dd-tipos" class="dropdown-content">
+              <a href="#" class="nav-link" data-section="tipo-int" data-explanation="Tipo inteiro em C++">int</a>
+              <a href="#" class="nav-link" data-section="tipo-float" data-explanation="Tipo ponto flutuante em C++">float / double</a>
+              <a href="#" class="nav-link" data-section="tipo-string" data-explanation="Tipo string em C++">string</a>
+              <a href="#" class="nav-link" data-section="tipo-bool" data-explanation="Tipo booleano em C++">bool</a>
+              <a href="#" class="nav-link" data-section="tipo-char" data-explanation="Tipo caractere em C++">char</a>
+            </div>
+          </div>
+
+          <div class="nav-section">
+            <a href="#estruturas" class="dropdown-btn" data-section="estruturas" data-explanation="Estruturas de dados da STL do C++.">
+              <i class="fas fa-database"></i>
+              <span>Estruturas de Dados</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <div id="dd-estruturas" class="dropdown-content">
+              <a href="#" class="nav-link" data-section="vector" data-explanation="Vector em C++">vector</a>
+              <a href="#" class="nav-link" data-section="array" data-explanation="Array em C++">array</a>
+              <a href="#" class="nav-link" data-section="map" data-explanation="Map em C++">map / unordered_map</a>
+              <a href="#" class="nav-link" data-section="set" data-explanation="Set em C++">set / unordered_set</a>
+            </div>
+          </div>
+
+          <div class="nav-section">
+            <a href="#entrada-saida" class="dropdown-btn" data-section="entrada-saida" data-explanation="Entrada e saída em C++.">
+              <i class="fas fa-exchange-alt"></i>
+              <span>Entrada e Saída de Dados</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <div id="dd-io" class="dropdown-content">
+              <a href="#" class="nav-link" data-section="cout" data-explanation="Saída com cout">cout</a>
+              <a href="#" class="nav-link" data-section="cin" data-explanation="Entrada com cin">cin</a>
+            </div>
+          </div>
+
+          <div class="nav-section">
+            <a href="#controle-fluxo" class="dropdown-btn" data-section="controle-fluxo" data-explanation="Estruturas de controle de fluxo em C++.">
+              <i class="fas fa-code-branch"></i>
+              <span>Controle de Fluxo</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <div id="dd-controle" class="dropdown-content">
+              <a href="#" class="nav-link" data-section="if-else" data-explanation="Estrutura condicional if/else em C++">if, else if, else</a>
+              <a href="#" class="nav-link" data-section="for" data-explanation="Laço for em C++">for</a>
+              <a href="#" class="nav-link" data-section="while" data-explanation="Laço while em C++">while</a>
+              <a href="#" class="nav-link" data-section="switch" data-explanation="Estrutura switch/case em C++">switch / case</a>
+            </div>
+          </div>
+
+          <div class="nav-section">
+            <a href="#funcoes" class="dropdown-btn" data-section="funcoes" data-explanation="Definição e uso de funções em C++.">
+              <i class="fas fa-cogs"></i>
+              <span>Funções</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <div id="dd-funcoes" class="dropdown-content">
+              <a href="#" class="nav-link" data-section="def" data-explanation="Definição de funções">Definição</a>
+              <a href="#" class="nav-link" data-section="parametros" data-explanation="Parâmetros e argumentos">Parâmetros</a>
+              <a href="#" class="nav-link" data-section="lambda" data-explanation="Funções lambda em C++">Lambda</a>
+              <a href="#" class="nav-link" data-section="retorno" data-explanation="Retorno de valores">Retorno</a>
+            </div>
+          </div>
+
+          <div class="nav-section">
+            <a href="#documentacao" class="nav-link" data-section="documentacao" data-explanation="Links para leitura recomendada sobre C++.">
+              <i class="fas fa-book"></i>
+              <span>Leitura Recomendada</span>
+            </a>
+          </div>
+
+          <div class="nav-section">
+            <a href="#tutoriais" class="nav-link" data-section="tutoriais" data-explanation="Links para tutoriais e guias práticos de C++.">
+              <i class="fas fa-graduation-cap"></i>
+              <span>Tutoriais</span>
+            </a>
+          </div>
+        </nav>
+      </div>
+
+      <div id="content">
+        <div id="explanation"></div>
+
+        <footer>
+          <div class="footer-content">
+            <div class="footer-divider"></div>
+            <p>© 2026 Referência da Linguagem C++ -> IFSULDEMINAS Campus Poços de Caldas</p>
+            <p class="credits">Desenvolvido por Lucas Fernandes &amp; David Delgado</p>
+            <p class="institution">Material didático para estudo de programação moderna e competições.</p>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </main>
+
+  <template id="tpl-introducao">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-play-circle text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Introdução ao C++</h2>
+      </div>
+      <p class="text-gray-700 mb-4">
+        C++ é uma linguagem de programação de propósito geral, compilada e de tipagem estática, criada por <strong>Bjarne Stroustrup</strong> como extensão da linguagem C, lançada em 1985. É amplamente utilizada em sistemas operacionais, jogos, motores gráficos, sistemas embarcados, finanças de alta frequência e competições de programação.
+      </p>
+      <p class="text-gray-700 mb-4">
+        Um dos pontos fortes do C++ é o controle preciso sobre memória e desempenho, sem abrir mão de abstrações modernas. Tornando a linguagem eficiente, robusta e uma excelente opção para quem busca participar de competições de programação.
+      </p>
+      <div class="code-block mb-4">
+        <pre><span class="pp">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="type">int</span> <span class="function">main</span>() {
+    <span class="comment">// Meu primeiro programa em C++</span>
+    cout &lt;&lt; <span class="string">"Olá, mundo!"</span> &lt;&lt; endl;
+
+    <span class="comment">// Variáveis precisam de declaração de tipo</span>
+    <span class="type">string</span> nome = <span class="string">"C++"</span>;
+    <span class="type">int</span> versao = <span class="number">23</span>;
+    cout &lt;&lt; <span class="string">"Bem-vindo ao "</span> &lt;&lt; nome &lt;&lt; <span class="string">" "</span> &lt;&lt; versao &lt;&lt; <span class="string">"!"</span> &lt;&lt; endl;
+
+    <span class="keyword">return</span> <span class="number">0</span>;
+}</pre>
+      </div>
+      <div class="bg-green-50 border-l-4 border-green-500 p-4 mt-4">
+        <div class="flex">
+          <i class="fas fa-lightbulb text-green-500 mr-3 mt-1"></i>
+          <div>
+            <h4 class="text-sm font-medium text-green-800">Características principais</h4>
+            <ul class="mt-1 text-sm text-green-700 list-disc list-inside">
+              <li>Tipagem estática -> o tipo é declarado em tempo de compilação</li>
+              <li>Compilada -> o código é traduzido para binário antes de executar</li>
+              <li>Suporta programação orientada a objetos, genérica e funcional</li>
+              <li>Gerenciamento de memória manual com <code>new</code>/<code>delete</code></li>
+              <li>Vasta biblioteca padrão (STL) com contêineres, algoritmos e utilitários</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-tipos">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-laptop-code text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Tipos de Dados</h2>
+      </div>
+      <p class="text-gray-700 mb-4">Em C++, toda variável deve ter seu tipo declarado explicitamente (ou inferido com <code>auto</code>). Os tipos fundamentais são definidos pela linguagem; <code>string</code> vem da STL.</p>
+      <div class="code-block mb-4">
+        <pre><span class="pp">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="pp">#include</span> <span class="string">&lt;string&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="type">int</span> <span class="function">main</span>() {
+    <span class="type">int</span>    x = <span class="number">42</span>;
+    <span class="type">double</span> y = <span class="number">3.14</span>;
+    <span class="type">string</span> nome = <span class="string">"C++"</span>;
+    <span class="type">bool</span>   ativo = <span class="keyword">true</span>;
+
+    <span class="comment">// auto infere o tipo automaticamente</span>
+    <span class="keyword">auto</span> z = <span class="number">100</span>;   <span class="comment">// int</span>
+    <span class="keyword">auto</span> pi = <span class="number">3.14</span>; <span class="comment">// double</span>
+}</pre>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+        <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">int</strong> inteiro de 32 bits: <code>1</code>, <code>-99</code>, <code>1000000</code></div>
+        <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">float / double</strong> ponto flutuante 32/64 bits: <code>3.14f</code>, <code>3.14</code></div>
+        <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">string</strong> cadeia de caracteres da STL: <code>"olá"</code></div>
+        <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">bool</strong> valor lógico: <code>true</code> / <code>false</code></div>
+        <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">char</strong> caractere único: <code>'A'</code>, <code>'\n'</code></div>
+        <div class="bg-gray-50 rounded p-4 border"><strong class="text-green-700">auto</strong> inferência de tipo (C++11+)</div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-tipo-int">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-hashtag text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Tipo int</h2>
+      </div>
+      <p class="text-gray-700 mb-4">O tipo <code>int</code> representa números inteiros. Em sistemas modernos, geralmente ocupa 32 bits (4 bytes) e pode armazenar valores de aproximadamente -2 bilhões a +2 bilhões.</p>
+      <div class="code-block mb-4">
+        <pre><span class="type">int</span> idade = <span class="number">25</span>;
+<span class="type">int</span> populacao = <span class="number">2147483647</span>; <span class="comment">// INT_MAX</span>
+<span class="type">unsigned int</span> positivo = <span class="number">4000000000</span>; <span class="comment">// maior que INT_MAX</span></pre>
+      </div>
+      <div class="bg-green-50 border-l-4 border-green-500 p-4">
+        <p class="text-sm text-green-700"><i class="fas fa-info-circle mr-2"></i>Use <code>long long</code> quando precisar de números maiores que 2 bilhões.</p>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-tipo-float">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-calculator text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Tipos float e double</h2>
+      </div>
+      <p class="text-gray-700 mb-4"><code>float</code> (32 bits) e <code>double</code> (64 bits) são usados para números com casas decimais. <code>double</code> é o padrão recomendado pela maioria dos casos.</p>
+      <div class="code-block mb-4">
+        <pre><span class="type">float</span>  pi_f = <span class="number">3.14159f</span>;
+<span class="type">double</span> pi_d = <span class="number">3.141592653589793</span>;
+
+<span class="comment">// Cuidado com precisão de ponto flutuante!</span>
+<span class="type">double</span> a = <span class="number">0.1</span> + <span class="number">0.2</span>;
+cout &lt;&lt; a &lt;&lt; endl; <span class="comment">// 0.30000000000000004</span></pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-tipo-string">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-font text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Tipo string</h2>
+      </div>
+      <p class="text-gray-700 mb-4">O tipo <code>string</code> (da biblioteca <code>&lt;string&gt;</code>) representa textos. É uma classe da STL, não um tipo primitivo.</p>
+      <div class="code-block mb-4">
+        <pre><span class="pp">#include</span> <span class="string">&lt;string&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="type">string</span> nome = <span class="string">"Lucas"</span>;
+<span class="type">string</span> completo = nome + <span class="string">" Fernandes"</span>;
+cout &lt;&lt; completo &lt;&lt; endl; <span class="comment">// Lucas Fernandes</span>
+
+<span class="comment">// Tamanho e acesso</span>
+cout &lt;&lt; completo.<span class="function">length</span>() &lt;&lt; endl;     <span class="comment">// 15</span>
+cout &lt;&lt; completo[<span class="number">0</span>] &lt;&lt; endl;         <span class="comment">// L</span></pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-tipo-bool">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-toggle-on text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Tipo bool</h2>
+      </div>
+      <p class="text-gray-700 mb-4">O tipo <code>bool</code> representa valores lógicos: <code>true</code> ou <code>false</code>. Ocupa geralmente 1 byte.</p>
+      <div class="code-block mb-4">
+        <pre><span class="type">bool</span> aprovado = <span class="keyword">true</span>;
+<span class="type">bool</span> reprovado = <span class="keyword">false</span>;
+
+<span class="keyword">if</span> (aprovado) {
+    cout &lt;&lt; <span class="string">"Parabéns!"</span> &lt;&lt; endl;
+}</pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-tipo-char">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-keyboard text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Tipo char</h2>
+      </div>
+      <p class="text-gray-700 mb-4"><code>char</code> armazena um único caractere (1 byte). Usa aspas simples.</p>
+      <div class="code-block mb-4">
+        <pre><span class="type">char</span> letra = <span class="string">'A'</span>;
+<span class="type">char</span> nova_linha = <span class="string">'\n'</span>;
+cout &lt;&lt; letra &lt;&lt; endl; <span class="comment">// A</span></pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-estruturas">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-database text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Estruturas de Dados (STL)</h2>
+      </div>
+      <p class="text-gray-700 mb-4">A Standard Template Library (STL) oferece contêineres poderosos e eficientes. Os mais usados são <code>vector</code>, <code>array</code>, <code>map</code> e <code>set</code>.</p>
+    </div>
+  </template>
+
+  <template id="tpl-vector">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-list text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">vector</h2>
+      </div>
+      <p class="text-gray-700 mb-4"><code>vector</code> é o contêiner mais usado em C++. É um array dinâmico que cresce automaticamente.</p>
+      <div class="code-block mb-4">
+        <pre><span class="pp">#include</span> <span class="string">&lt;vector&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="type">vector</span>&lt;<span class="type">int</span>&gt; nums = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>};
+nums.<span class="function">push_back</span>(<span class="number">4</span>);           <span class="comment">// adiciona 4</span>
+nums.<span class="function">pop_back</span>();            <span class="comment">// remove último</span>
+
+<span class="keyword">for</span> (<span class="type">int</span> x : nums) {
+    cout &lt;&lt; x &lt;&lt; <span class="string">" "</span>;
+} <span class="comment">// 1 2 3 4</span></pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-array">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-th text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">array (C++11)</h2>
+      </div>
+      <p class="text-gray-700 mb-4"><code>std::array</code> é um array de tamanho fixo com interface moderna da STL.</p>
+      <div class="code-block mb-4">
+        <pre><span class="pp">#include</span> <span class="string">&lt;array&gt;</span>
+<span class="type">array</span>&lt;<span class="type">int</span>, <span class="number">5</span>&gt; arr = {<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>, <span class="number">40</span>, <span class="number">50</span>};
+cout &lt;&lt; arr[<span class="number">2</span>] &lt;&lt; endl;     <span class="comment">// 30</span>
+cout &lt;&lt; arr.<span class="function">size</span>() &lt;&lt; endl; <span class="comment">// 5</span></pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-map">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-map text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">map e unordered_map</h2>
+      </div>
+      <p class="text-gray-700 mb-4"><code>map</code> é ordenado (árvore). <code>unordered_map</code> usa hash e é mais rápido para buscas.</p>
+      <div class="code-block mb-4">
+        <pre><span class="pp">#include</span> <span class="string">&lt;map&gt;</span>
+<span class="pp">#include</span> <span class="string">&lt;unordered_map&gt;</span>
+
+<span class="type">map</span>&lt;<span class="type">string</span>, <span class="type">int</span>&gt; idades;
+idades[<span class="string">"Lucas"</span>] = <span class="number">25</span>;
+
+<span class="type">unordered_map</span>&lt;<span class="type">string</span>, <span class="type">int</span>&gt; freq;
+freq[<span class="string">"maçã"</span>]++;</pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-set">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-layer-group text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">set e unordered_set</h2>
+      </div>
+      <p class="text-gray-700 mb-4"><code>set</code> armazena elementos únicos ordenados. <code>unordered_set</code> usa hash.</p>
+      <div class="code-block mb-4">
+        <pre><span class="pp">#include</span> <span class="string">&lt;set&gt;</span>
+<span class="type">set</span>&lt;<span class="type">int</span>&gt; s = {<span class="number">3</span>, <span class="number">1</span>, <span class="number">4</span>, <span class="number">1</span>, <span class="number">5</span>};
+<span class="comment">// s contém: 1, 3, 4, 5 (sem duplicatas)</span>
+
+<span class="keyword">if</span> (s.<span class="function">count</span>(<span class="number">3</span>)) { <span class="comment">// true</span> }</pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-entrada-saida">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-exchange-alt text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Entrada e Saída de Dados</h2>
+      </div>
+      <p class="text-gray-700 mb-4">Em C++ moderno usamos <code>cout</code> para saída e <code>cin</code> para entrada, da biblioteca <code>&lt;iostream&gt;</code>.</p>
+    </div>
+  </template>
+
+  <template id="tpl-cout">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-print text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Saída com cout</h2>
+      </div>
+      <p class="text-gray-700 mb-4"><code>cout</code> é usado para imprimir na tela. Use <code>&lt;&lt;</code> para encadear valores e <code>endl</code> ou <code>'\n'</code> para nova linha.</p>
+      <div class="code-block mb-4">
+        <pre><span class="pp">#include</span> <span class="string">&lt;iostream&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+cout &lt;&lt; <span class="string">"Olá, "</span> &lt;&lt; <span class="string">"mundo!"</span> &lt;&lt; endl;
+cout &lt;&lt; <span class="string">"Idade: "</span> &lt;&lt; <span class="number">25</span> &lt;&lt; <span class="string">"\n"</span>;</pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-cin">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-keyboard text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Entrada com cin</h2>
+      </div>
+      <p class="text-gray-700 mb-4"><code>cin</code> lê da entrada padrão. Use <code>&gt;&gt;</code> para ler valores.</p>
+      <div class="code-block mb-4">
+        <pre><span class="type">string</span> nome;
+<span class="type">int</span> idade;
+
+cout &lt;&lt; <span class="string">"Digite seu nome: "</span>;
+cin &gt;&gt; nome;
+
+cout &lt;&lt; <span class="string">"Digite sua idade: "</span>;
+cin &gt;&gt; idade;</pre>
+      </div>
+      <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mt-2">
+        <p class="text-sm text-yellow-800"><i class="fas fa-exclamation-triangle mr-2"></i> <code>cin &gt;&gt;</code> para na primeira espaço. Para ler frases inteiras use <code>getline(cin, variavel)</code>.</p>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-controle-fluxo">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-code-branch text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Controle de Fluxo</h2>
+      </div>
+      <p class="text-gray-700 mb-4">C++ possui as estruturas clássicas de controle de fluxo: condicionais e laços.</p>
+    </div>
+  </template>
+
+  <template id="tpl-if-else">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-question-circle text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">if, else if, else</h2>
+      </div>
+      <p class="text-gray-700 mb-4">Estrutura condicional básica.</p>
+      <div class="code-block mb-4">
+        <pre><span class="keyword">if</span> (idade &gt;= <span class="number">18</span>) {
+    cout &lt;&lt; <span class="string">"Maior de idade"</span> &lt;&lt; endl;
+} <span class="keyword">else if</span> (idade &gt;= <span class="number">0</span>) {
+    cout &lt;&lt; <span class="string">"Menor de idade"</span> &lt;&lt; endl;
+} <span class="keyword">else</span> {
+    cout &lt;&lt; <span class="string">"Idade inválida"</span> &lt;&lt; endl;
+}</pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-for">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-redo text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Laço for</h2>
+      </div>
+      <p class="text-gray-700 mb-4">Laço com contador. A forma moderna com range-based for é muito usada com contêineres.</p>
+      <div class="code-block mb-4">
+        <pre><span class="comment">// for tradicional</span>
+<span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i++) {
+    cout &lt;&lt; i &lt;&lt; <span class="string">" "</span>;
+}
+
+<span class="comment">// Range-based for (C++11)</span>
+<span class="type">vector</span>&lt;<span class="type">int</span>&gt; v = {<span class="number">10</span>, <span class="number">20</span>, <span class="number">30</span>};
+<span class="keyword">for</span> (<span class="type">int</span> x : v) {
+    cout &lt;&lt; x &lt;&lt; <span class="string">" "</span>;
+}</pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-while">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-sync text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Laço while</h2>
+      </div>
+      <p class="text-gray-700 mb-4">Executa enquanto a condição for verdadeira.</p>
+      <div class="code-block mb-4">
+        <pre><span class="type">int</span> i = <span class="number">0</span>;
+<span class="keyword">while</span> (i &lt; <span class="number">5</span>) {
+    cout &lt;&lt; i++ &lt;&lt; <span class="string">" "</span>;
+}</pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-switch">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-list-ol text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">switch / case</h2>
+      </div>
+      <p class="text-gray-700 mb-4">Usado para múltiplas escolhas baseadas em um valor inteiro ou enum.</p>
+      <div class="code-block mb-4">
+        <pre><span class="keyword">switch</span> (opcao) {
+    <span class="keyword">case</span> <span class="number">1</span>:
+        cout &lt;&lt; <span class="string">"Opção 1"</span> &lt;&lt; endl;
+        <span class="keyword">break</span>;
+    <span class="keyword">case</span> <span class="number">2</span>:
+        cout &lt;&lt; <span class="string">"Opção 2"</span> &lt;&lt; endl;
+        <span class="keyword">break</span>;
+    <span class="keyword">default</span>:
+        cout &lt;&lt; <span class="string">"Opção inválida"</span> &lt;&lt; endl;
+}</pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-funcoes">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-cogs text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Funções</h2>
+      </div>
+      <p class="text-gray-700 mb-4">Em C++, funções devem declarar explicitamente o tipo de retorno e o tipo de cada parâmetro. Suportam sobrecarga, parâmetros padrão, passagem por referência e funções lambda.</p>
+    </div>
+  </template>
+
+  <template id="tpl-def">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-plus-circle text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Definição de Funções</h2>
+      </div>
+      <p class="text-gray-700 mb-4">A sintaxe é <code>tipoRetorno nome(parâmetros) { corpo }</code>. Use <code>void</code> quando a função não retorna valor.</p>
+      <div class="code-block mb-4">
+        <pre><span class="comment">// Definição simples</span>
+<span class="type">int</span> <span class="function">somar</span>(<span class="type">int</span> a, <span class="type">int</span> b) {
+    <span class="keyword">return</span> a + b;
+}
+
+<span class="comment">// Anotações de tipo explícitas</span>
+<span class="type">double</span> <span class="function">potencia</span>(<span class="type">double</span> base, <span class="type">int</span> exp) {
+    <span class="keyword">return</span> <span class="function">pow</span>(base, exp);
+}
+
+<span class="type">int</span> resultado = <span class="function">somar</span>(<span class="number">3</span>, <span class="number">4</span>);
+cout &lt;&lt; resultado &lt;&lt; endl; <span class="comment">// 7</span></pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-parametros">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-sliders-h text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Parâmetros e Argumentos</h2>
+      </div>
+      <p class="text-gray-700 mb-4">C++ suporta parâmetros padrão, passagem por valor, por referência (<code>&amp;</code>) e por ponteiro.</p>
+      <div class="code-block mb-4">
+        <pre><span class="comment">// Valor padrão</span>
+<span class="type">void</span> <span class="function">conectar</span>(<span class="type">string</span> host, <span class="type">int</span> porta = <span class="number">8080</span>) {
+    cout &lt;&lt; <span class="string">"Conectando a "</span> &lt;&lt; host &lt;&lt; <span class="string">":"</span> &lt;&lt; porta &lt;&lt; endl;
+}
+<span class="function">conectar</span>(<span class="string">"localhost"</span>);          <span class="comment">// usa porta=8080</span>
+
+<span class="comment">// Passagem por referência (modifica original)</span>
+<span class="type">void</span> <span class="function">dobrar</span>(<span class="type">int</span>&amp; x) { x *= <span class="number">2</span>; }
+<span class="type">int</span> n = <span class="number">5</span>;
+<span class="function">dobrar</span>(n);
+cout &lt;&lt; n &lt;&lt; endl; <span class="comment">// 10</span></pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-lambda">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-bolt text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Funções Lambda</h2>
+      </div>
+      <p class="text-gray-700 mb-4">Lambdas em C++ (C++11) têm a sintaxe <code>[captura](parâmetros) { corpo }</code>.</p>
+      <div class="code-block mb-4">
+        <pre><span class="comment">// Lambda básica</span>
+<span class="keyword">auto</span> dobro = [](<span class="type">int</span> x) { <span class="keyword">return</span> x * <span class="number">2</span>; };
+cout &lt;&lt; <span class="function">dobro</span>(<span class="number">5</span>) &lt;&lt; endl; <span class="comment">// 10</span>
+
+<span class="comment">// Usando com sort</span>
+<span class="type">vector</span>&lt;pair&lt;<span class="type">string</span>, <span class="type">int</span>&gt;&gt; pessoas = {
+    {<span class="string">"Lucas"</span>, <span class="number">25</span>}, {<span class="string">"Ana"</span>, <span class="number">30</span>}
+};
+<span class="function">sort</span>(pessoas.<span class="function">begin</span>(), pessoas.<span class="function">end</span>(),
+    [](<span class="keyword">const auto</span>&amp; a, <span class="keyword">const auto</span>&amp; b) {
+        <span class="keyword">return</span> a.second &lt; b.second;
+    });</pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-retorno">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-reply text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Retorno de Valores</h2>
+      </div>
+      <p class="text-gray-700 mb-4">Funções retornam um único valor. Para múltiplos valores use <code>pair</code>, <code>tuple</code> ou <code>struct</code>. Com C++17, structured bindings facilitam o desempacotamento.</p>
+      <div class="code-block mb-4">
+        <pre><span class="pp">#include</span> <span class="string">&lt;tuple&gt;</span>
+<span class="keyword">using namespace</span> std;
+
+<span class="comment">// Retorno múltiplo com pair</span>
+pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt; <span class="function">minmax_par</span>(<span class="type">vector</span>&lt;<span class="type">int</span>&gt; v) {
+    <span class="keyword">return</span> {*<span class="function">min_element</span>(v.<span class="function">begin</span>(), v.<span class="function">end</span>()),
+            *<span class="function">max_element</span>(v.<span class="function">begin</span>(), v.<span class="function">end</span>())};
+}
+
+<span class="comment">// Structured binding (C++17)</span>
+<span class="keyword">auto</span> [minimo, maximo] = <span class="function">minmax_par</span>({<span class="number">3</span>, <span class="number">1</span>, <span class="number">9</span>, <span class="number">2</span>, <span class="number">7</span>});
+cout &lt;&lt; minimo &lt;&lt; <span class="string">" "</span> &lt;&lt; maximo &lt;&lt; endl; <span class="comment">// 1 9</span></pre>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-documentacao">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-external-link-alt text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Leitura Recomendada</h2>
+      </div>
+      <ul class="space-y-3 text-gray-700">
+        <li><a href="https://en.cppreference.com/w/" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>cppreference.com -> documentação completa da STL e linguagem</a></li>
+        <li><a href="https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>C++ Core Guidelines — boas práticas oficiais</a></li>
+        <li><a href="https://learncpp.com/" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>LearnCpp.com -> tutorial completo e gratuito</a></li>
+      </ul>
+    </div>
+  </template>
+
+  <template id="tpl-tutoriais">
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div class="flex items-center mb-4">
+        <i class="fas fa-book-open text-green-600 text-2xl mr-3"></i>
+        <h2 class="text-2xl font-bold text-gray-800">Tutoriais</h2>
+      </div>
+      <ul class="space-y-3 text-gray-700">
+        <li><a href="https://www.w3schools.com/cpp/" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>W3Schools C++</a></li>
+        <li><a href="https://exercism.org/tracks/cpp" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>Exercism -> prática com exercícios em C++</a></li>
+        <li><a href="https://www.hackerrank.com/domains/cpp" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>HackerRank C++</a></li>
+        <li><a href="https://codeforces.com/" target="_blank" class="text-green-600 hover:underline"><i class="fas fa-link mr-2"></i>Codeforces -> competições e problemas de programação</a></li>
+      </ul>
+    </div>
+  </template>
+
+  <script>
+    const templates = {
+      "introducao":     "tpl-introducao",
+      "tipos":          "tpl-tipos",
+      "tipo-int":       "tpl-tipo-int",
+      "tipo-float":     "tpl-tipo-float",
+      "tipo-string":    "tpl-tipo-string",
+      "tipo-bool":      "tpl-tipo-bool",
+      "tipo-char":      "tpl-tipo-char",
+      "estruturas":     "tpl-estruturas",
+      "vector":         "tpl-vector",
+      "array":          "tpl-array",
+      "map":            "tpl-map",
+      "set":            "tpl-set",
+      "entrada-saida":  "tpl-entrada-saida",
+      "cout":           "tpl-cout",
+      "cin":            "tpl-cin",
+      "controle-fluxo": "tpl-controle-fluxo",
+      "if-else":        "tpl-if-else",
+      "for":            "tpl-for",
+      "while":          "tpl-while",
+      "switch":         "tpl-switch",
+      "funcoes":        "tpl-funcoes",
+      "def":            "tpl-def",
+      "parametros":     "tpl-parametros",
+      "lambda":         "tpl-lambda",
+      "retorno":        "tpl-retorno",
+      "documentacao":   "tpl-documentacao",
+      "tutoriais":      "tpl-tutoriais",
+    };
+
+    function loadSection(sectionId) {
+      const tplId = templates[sectionId];
+      if (!tplId) return;
+      const tpl = document.getElementById(tplId);
+      if (!tpl) return;
+      const el = document.getElementById("explanation");
+      el.innerHTML = "";
+      el.appendChild(tpl.content.cloneNode(true));
+      localStorage.setItem("activeSectionId", sectionId);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function initDropdowns(container) {
+      container.querySelectorAll(".dropdown-btn").forEach((button) => {
+        button.addEventListener("click", (e) => {
+          e.preventDefault();
+          const dropdownContent = button.nextElementSibling;
+          const icon = button.querySelector("i:last-child");
+
+          dropdownContent.classList.toggle("open");
+          icon.classList.toggle("rotate-90");
+
+          container.querySelectorAll(".dropdown-content").forEach((content) => {
+            if (content !== dropdownContent && content.classList.contains("open")) {
+              content.classList.remove("open");
+              content.previousElementSibling
+                .querySelector("i:last-child")
+                .classList.remove("rotate-90");
+            }
+          });
+          const section = button.getAttribute("data-section");
+          if (section) loadSection(section);
+        });
+      });
+    }
+
+    function initNavLinks(container) {
+      container.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const section = link.getAttribute("data-section");
+          if (section) {
+            loadSection(section);
+            document.getElementById("mobile-drawer").classList.remove("open");
+            document.getElementById("mobile-overlay").classList.remove("open");
+          }
+        });
+      });
+    }
+
+    const hamburger = document.getElementById("hamburger-btn");
+    const drawer = document.getElementById("mobile-drawer");
+    const overlay = document.getElementById("mobile-overlay");
+    const closeBtn = document.getElementById("close-drawer");
+    const mobileNavContainer = document.getElementById("mobile-nav-container");
+
+    hamburger.addEventListener("click", () => {
+      if (mobileNavContainer.innerHTML.trim() === "") {
+        const navClone = document.getElementById("main-nav").cloneNode(true);
+        navClone.id = "mobile-nav";
+        mobileNavContainer.appendChild(navClone);
+        initDropdowns(mobileNavContainer);
+        initNavLinks(mobileNavContainer);
+      }
+      drawer.classList.add("open");
+      overlay.classList.add("open");
+    });
+
+    const closeDrawer = () => {
+      drawer.classList.remove("open");
+      overlay.classList.remove("open");
+    };
+
+    closeBtn.addEventListener("click", closeDrawer);
+    overlay.addEventListener("click", closeDrawer);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const input = document.querySelector('input[type="text"]');
+      const resultsContainer = document.getElementById("search-results");
+
+      input.addEventListener("input", () => {
+        const query = input.value.toLowerCase().trim();
+        resultsContainer.innerHTML = "";
+
+        if (query.length < 2) {
+          resultsContainer.classList.add("hidden");
+          return;
+        }
+
+        const links = document.querySelectorAll("#main-nav .nav-link");
+        const matches = [];
+
+        links.forEach((link) => {
+          const text = link.textContent.toLowerCase().trim();
+          const explanation = link.getAttribute("data-explanation") || "";
+          if (text.includes(query) || explanation.toLowerCase().includes(query)) {
+            matches.push({ element: link, text: link.textContent.trim() });
+          }
+        });
+
+        if (matches.length === 0) {
+          resultsContainer.innerHTML = "<p class='p-2 text-gray-500'>Nenhum resultado encontrado.</p>";
+        } else {
+          matches.forEach((match) => {
+            const item = document.createElement("div");
+            item.className = "search-result-item";
+            item.innerText = match.text;
+            item.addEventListener("click", () => {
+              match.element.click();
+              resultsContainer.classList.add("hidden");
+              input.value = "";
+            });
+            resultsContainer.appendChild(item);
+          });
+        }
+
+        resultsContainer.classList.remove("hidden");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!input.contains(e.target) && !resultsContainer.contains(e.target)) {
+          resultsContainer.classList.add("hidden");
+        }
+      });
+
+      initDropdowns(document.getElementById("sidebar"));
+      initNavLinks(document.getElementById("sidebar"));
+
+      const lastSection = localStorage.getItem("activeSectionId");
+      const sectionToLoad = lastSection && templates[lastSection] ? lastSection : "introducao";
+
+      const parentDropdownMap = {
+        "tipo-int": "dd-tipos", "tipo-float": "dd-tipos", "tipo-string": "dd-tipos",
+        "tipo-bool": "dd-tipos", "tipo-char": "dd-tipos",
+        "vector": "dd-estruturas", "array": "dd-estruturas", "map": "dd-estruturas", "set": "dd-estruturas",
+        "cout": "dd-io", "cin": "dd-io",
+        "if-else": "dd-controle", "for": "dd-controle", "while": "dd-controle", "switch": "dd-controle",
+        "def": "dd-funcoes", "parametros": "dd-funcoes", "lambda": "dd-funcoes", "retorno": "dd-funcoes",
+      };
+
+      const parentId = parentDropdownMap[sectionToLoad];
+      if (parentId) {
+        const dd = document.getElementById(parentId);
+        if (dd) {
+          dd.classList.add("open");
+          const btn = dd.previousElementSibling;
+          if (btn) btn.querySelector("i:last-child")?.classList.add("rotate-90");
+        }
+      }
+      loadSection(sectionToLoad);
+    });
+  </script>
+</body>
+</html>
