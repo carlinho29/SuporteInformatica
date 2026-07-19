@@ -1,1 +1,1202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Guia Completo de Hardware - Componentes de Computador</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-card: #1a1a1a;
+      --bg-card-hover: #222222;
+      --bg-sidebar: #111111;
+      --bg-dropdown: #181818;
+      --text-primary: #f5f5f5;
+      --text-secondary: #a0a0a0;
+      --text-muted: #666666;
+      --accent: #00a651;
+      --accent-hover: #00c45f;
+      --accent-dim: rgba(0, 166, 81, 0.12);
+      --border: #2a2a2a;
+      --border-hover: #333333;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: all 0.25s ease;
+    }
 
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    .topbar {
+      background: linear-gradient(180deg, #111111 0%, var(--bg-primary) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+    }
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+    .topbar a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .topbar a:hover { color: var(--accent-hover); }
+
+    .brand-header {
+      background: linear-gradient(180deg, #111111 0%, var(--bg-primary) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .header-title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .brand-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .brand-header i { color: var(--accent); font-size: 1.6rem; }
+
+    .search-wrapper { position: relative; }
+    .search-input {
+      padding: 0.6rem 2.5rem 0.6rem 1rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      width: 220px;
+      transition: var(--transition);
+    }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+    .search-btn {
+      position: absolute;
+      right: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+    #search-results {
+      position: absolute;
+      left: 0;
+      top: calc(100% + 0.5rem);
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow);
+      z-index: 200;
+      overflow: hidden;
+    }
+    #search-results.hidden { display: none; }
+    .search-result-item {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      transition: var(--transition);
+      border-bottom: 1px solid var(--border);
+    }
+    .search-result-item:last-child { border-bottom: none; }
+    .search-result-item:hover {
+      background: var(--accent-dim);
+      color: var(--accent-hover);
+    }
+
+    #hamburger-btn {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
+    #hamburger-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    #mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 300;
+      backdrop-filter: blur(4px);
+    }
+    #mobile-overlay.open { display: block; }
+
+    #mobile-drawer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 300px;
+      background: var(--bg-sidebar);
+      z-index: 400;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+      border-right: 1px solid var(--border);
+      box-shadow: 4px 0 20px rgba(0,0,0,0.5);
+    }
+    #mobile-drawer.open { transform: translateX(0); }
+    .drawer-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .drawer-header h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+    #close-drawer {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+    #close-drawer:hover { color: var(--accent); }
+    #mobile-nav-container { padding: 0.75rem; }
+
+    main { flex: 1; }
+    .main-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem;
+      display: flex;
+      gap: 2rem;
+    }
+
+    #sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      height: fit-content;
+      position: sticky;
+      top: 100px;
+      box-shadow: var(--shadow-sm);
+    }
+    .sidebar-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-header h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    #main-nav { padding: 0.75rem; }
+
+    .nav-section { margin-bottom: 0.5rem; }
+    .nav-link, .dropdown-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.7rem 0.9rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+    .nav-link:hover, .dropdown-btn:hover {
+      background: var(--accent-dim);
+      color: var(--accent-hover);
+    }
+    .nav-link i, .dropdown-btn i { width: 18px; text-align: center; }
+    .dropdown-btn i:last-child {
+      position: absolute;
+      right: 0.75rem;
+      font-size: 0.7rem;
+      transition: transform 0.3s ease;
+    }
+    .dropdown-btn i.rotate-90 { transform: rotate(90deg); }
+
+    .dropdown-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      padding-left: 0.5rem;
+    }
+    .dropdown-content.open { max-height: 1000px; }
+    .dropdown-content .nav-link {
+      font-size: 0.85rem;
+      padding: 0.55rem 0.9rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .sidebar-resources {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .sidebar-resources h3 {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 0.75rem;
+      padding: 0 0.9rem;
+    }
+    .sidebar-resources ul { list-style: none; }
+    .sidebar-resources li { margin-bottom: 0.15rem; }
+    .sidebar-resources a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.9rem;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+    }
+    .sidebar-resources a:hover {
+      color: var(--accent-hover);
+      background: var(--accent-dim);
+    }
+
+    #content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .content-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .content-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow);
+    }
+    .content-card h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .content-card h2 i { color: var(--accent); font-size: 1.3rem; }
+    .content-card p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+    .content-card p:last-child { margin-bottom: 0; }
+    .content-card strong { color: var(--text-primary); }
+    .content-card code {
+      background: var(--bg-secondary);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: var(--accent-hover);
+      border: 1px solid var(--border);
+    }
+
+    .code-block {
+      font-family: 'Fira Code', 'Courier New', monospace;
+      background: #0d0d0d;
+      color: #d4d4d4;
+      border-radius: var(--radius-sm);
+      padding: 1.25rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      border: 1px solid var(--border);
+      font-size: 0.88rem;
+      line-height: 1.7;
+    }
+    .code-block pre { margin: 0; white-space: pre-wrap; word-wrap: break-word; }
+    .keyword  { color: #569cd6; }
+    .string   { color: #ce9178; }
+    .comment  { color: #6a9955; font-style: italic; }
+    .function { color: #dcdcaa; }
+    .type     { color: #4ec9b0; }
+
+    .info-box {
+      background: var(--accent-dim);
+      border-left: 3px solid var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      padding: 1rem 1.25rem;
+      margin-top: 1rem;
+    }
+    .info-box h4 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent-hover);
+      margin-bottom: 0.5rem;
+    }
+    .info-box ul {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      padding-left: 1.2rem;
+    }
+    .info-box li { margin-bottom: 0.25rem; }
+    .info-box i { color: var(--accent); margin-right: 0.5rem; }
+    .info-box + .info-box { margin-top: 1rem; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .grid-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .grid-item:hover { border-color: var(--accent); }
+    .grid-item strong { color: var(--accent); }
+
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .spec-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      text-align: center;
+      transition: var(--transition);
+    }
+    .spec-card:hover { border-color: var(--accent); }
+    .spec-card strong {
+      color: var(--accent-hover);
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    .spec-card span { color: var(--text-secondary); font-size: 0.82rem; }
+
+    .hardware-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: var(--radius-sm);
+      margin: 1rem 0;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .term-block {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .term-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .term-block h4 { color: var(--accent-hover); font-weight: 700; margin-bottom: 0.25rem; font-size: 0.95rem; }
+    .term-block p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0; }
+
+    .content-card a {
+      color: var(--accent);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    .content-card a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 1.25rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-divider {
+      width: 60px;
+      height: 2px;
+      background: var(--accent);
+      margin: 0 auto 1rem;
+      border-radius: 1px;
+      opacity: 0.6;
+    }
+    footer p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0.5rem; }
+    footer .credits { font-weight: 600; color: var(--text-primary); }
+    footer a { color: var(--accent); text-decoration: none; transition: color 0.2s ease; }
+    footer a:hover { color: var(--accent-hover); }
+    .institution { font-size: 0.78rem !important; color: var(--text-muted) !important; margin-top: 0.75rem; }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-primary); }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+    @media (max-width: 900px) {
+      #sidebar { display: none; }
+      #hamburger-btn { display: block; }
+      .main-layout { padding: 1.25rem; gap: 0; }
+      .brand-header h1 { font-size: 1.1rem; }
+      .search-input { width: 160px; font-size: 0.85rem; }
+      .content-card { padding: 1.25rem; }
+      .content-card h2 { font-size: 1.2rem; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .specs-grid { grid-template-columns: repeat(2, 1fr); }
+      .code-block { padding: 1rem; font-size: 0.82rem; }
+    }
+
+    @media (max-width: 480px) {
+      .brand-header { padding: 1rem; }
+      .brand-header h1 { font-size: 0.95rem; }
+      .search-input { width: 130px; padding: 0.5rem 2rem 0.5rem 0.8rem; }
+      .content-card { padding: 1rem; }
+      .content-card h2 { font-size: 1.1rem; }
+      .code-block { padding: 0.75rem; font-size: 0.78rem; }
+      .grid-item { padding: 0.75rem; font-size: 0.85rem; }
+      .specs-grid { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+      .spec-card { padding: 0.75rem; }
+      .topbar-inner { flex-direction: column; gap: 0.25rem; text-align: center; }
+    }
+
+    a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="mobile-overlay"></div>
+  <div id="mobile-drawer">
+    <div class="drawer-header">
+      <h2>Sumário</h2>
+      <button id="close-drawer">&times;</button>
+    </div>
+    <div id="mobile-nav-container"></div>
+  </div>
+
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span class="hidden sm:inline">IFSULDEMINAS &middot; Campus Poços de Caldas</span>
+      <a href="https://suporte-informatica.vercel.app/">
+        <i class="fas fa-arrow-left mr-1"></i> Portal de Aprendizado
+      </a>
+    </div>
+  </div>
+
+  <header class="brand-header">
+    <div class="header-container">
+      <div class="header-title-wrapper">
+        <button id="hamburger-btn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <i class="fas fa-microchip text-3xl"></i>
+        <h1>Guia Completo de Hardware</h1>
+      </div>
+      <div class="search-wrapper">
+        <div class="relative">
+          <input type="text" placeholder="Pesquisar" class="search-input" />
+          <button class="search-btn"><i class="fas fa-search"></i></button>
+          <div id="search-results" class="hidden"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="main-layout">
+      <div id="sidebar">
+        <div class="sidebar-header">
+          <h1>Sumário</h1>
+        </div>
+        <nav id="main-nav">
+          <div class="nav-section">
+            <a href="#introducao" class="nav-link" data-section="introducao" data-explanation="Introdução ao hardware e seus conceitos básicos.">
+              <i class="fas fa-play"></i>
+              <span>Introdução</span>
+            </a>
+          </div>
+
+          <div class="nav-section">
+            <a href="#componentes" class="dropdown-btn" data-section="cpu" data-explanation="Componentes principais de um computador.">
+              <i class="fas fa-laptop-code"></i>
+              <span>Componentes Principais</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <div id="dd-componentes" class="dropdown-content">
+              <a href="#" class="nav-link" data-section="cpu" data-explanation="Processador (CPU) --> O coração do computador">Processador (CPU)</a>
+              <a href="#" class="nav-link" data-section="placa-mae" data-explanation="Placa-mãe --> Conecta todos os componentes">Placa-mãe</a>
+              <a href="#" class="nav-link" data-section="ram" data-explanation="Memória RAM --> Memória de acesso rápido">Memória RAM</a>
+              <a href="#" class="nav-link" data-section="gpu" data-explanation="Placa de Vídeo (GPU) --> Processamento gráfico">Placa de Vídeo (GPU)</a>
+              <a href="#" class="nav-link" data-section="armazenamento" data-explanation="Armazenamento --> SSD e HDD">Armazenamento (SSD/HDD)</a>
+            </div>
+          </div>
+
+          <div class="nav-section">
+            <a href="#perifericos" class="dropdown-btn" data-section="monitor" data-explanation="Periféricos e dispositivos de entrada/saída.">
+              <i class="fas fa-keyboard"></i>
+              <span>Periféricos</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <div id="dd-perifericos" class="dropdown-content">
+              <a href="#" class="nav-link" data-section="monitor" data-explanation="Monitor --> Dispositivo de saída visual">Monitor</a>
+              <a href="#" class="nav-link" data-section="teclado-mouse" data-explanation="Teclado e Mouse --> Dispositivos de entrada">Teclado e Mouse</a>
+              <a href="#" class="nav-link" data-section="fonte" data-explanation="Fonte de Alimentação --> Distribui energia">Fonte de Alimentação</a>
+            </div>
+          </div>
+
+          <div class="nav-section">
+            <a href="#conceitos" class="dropdown-btn" data-section="frequencia" data-explanation="Conceitos técnicos e especificações de hardware.">
+              <i class="fas fa-cogs"></i>
+              <span>Conceitos Técnicos</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <div id="dd-conceitos" class="dropdown-content">
+              <a href="#" class="nav-link" data-section="frequencia" data-explanation="Frequência e Clock --> Velocidade de processamento">Frequência e Clock</a>
+              <a href="#" class="nav-link" data-section="nucleos" data-explanation="Núcleos e Threads --> Processamento paralelo">Núcleos e Threads</a>
+              <a href="#" class="nav-link" data-section="cache" data-explanation="Cache --> Memória ultra-rápida">Cache</a>
+              <a href="#" class="nav-link" data-section="tdp" data-explanation="TDP --> Consumo de energia">TDP (Consumo de Energia)</a>
+            </div>
+          </div>
+
+          <div class="nav-section">
+            <a href="#tecnologias" class="dropdown-btn" data-section="nvme" data-explanation="Gerações e tecnologias de hardware.">
+              <i class="fas fa-code-branch"></i>
+              <span>Tecnologias Modernas</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <div id="dd-tecnologias" class="dropdown-content">
+              <a href="#" class="nav-link" data-section="nvme" data-explanation="NVMe --> Armazenamento ultra-rápido">NVMe</a>
+              <a href="#" class="nav-link" data-section="pcie" data-explanation="PCIe --> Barramento de alta velocidade">PCIe</a>
+              <a href="#" class="nav-link" data-section="ddr5" data-explanation="DDR5 --> Memória de nova geração">DDR5</a>
+            </div>
+          </div>
+
+          <div class="sidebar-resources">
+            <h3>Recursos Úteis</h3>
+            <ul>
+              <li>
+                <a href="#" class="nav-link" data-section="dicas" data-explanation="Dicas práticas para escolher e manter seu hardware.">
+                  <i class="fas fa-lightbulb text-xs"></i> Dicas Práticas
+                </a>
+              </li>
+              <li>
+                <a href="#" class="nav-link" data-section="glossario" data-explanation="Glossário de termos técnicos de hardware.">
+                  <i class="fas fa-book text-xs"></i> Glossário
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+
+      <div id="content">
+        <div id="explanation"></div>
+
+        <footer>
+          <div class="footer-content">
+            <div class="footer-divider"></div>
+            <p>© 2026 Guia Completo de Hardware. Todos os direitos reservados.</p>
+            <p>Este site é apenas para fins educacionais.</p>
+            <p class="credits">Desenvolvido por Lucas Fernandes &amp; David Delgado</p>
+            <div style="margin-top: 0.75rem;">
+              <a href="https://github.com/" target="_blank"><i class="fab fa-github"></i> GitHub</a>
+            </div>
+            <p class="institution">IFSULDEMINAS &middot; Campus Poços de Caldas</p>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </main>
+
+  <template id="tpl-introducao">
+    <div class="content-card">
+      <h2><i class="fas fa-play-circle"></i>Introdução ao Hardware</h2>
+      <p><strong>Hardware</strong> refere-se a todos os componentes físicos de um computador. Diferentemente do software (programas e sistemas operacionais), o hardware é tangível e pode ser tocado. Cada componente tem uma função específica e trabalha em conjunto para fazer o computador funcionar.</p>
+      <p>Um computador moderno é composto por diversos componentes integrados, desde o processador que executa instruções até a memória que armazena dados temporariamente. Entender como esses componentes funcionam é essencial para escolher o equipamento certo, resolver problemas e otimizar o desempenho.</p>
+      <div class="info-box">
+        <h4><i class="fas fa-lightbulb"></i>Categorias principais de hardware</h4>
+        <ul>
+          <li><strong>Componentes Internos:</strong> CPU, RAM, Placa-mãe, GPU, Armazenamento</li>
+          <li><strong>Periféricos:</strong> Monitor, Teclado, Mouse, Impressora</li>
+          <li><strong>Fonte de Alimentação:</strong> Distribui energia para todos os componentes</li>
+          <li><strong>Gabinete:</strong> Protege e organiza os componentes internos</li>
+        </ul>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-cpu">
+    <div class="content-card">
+      <h2><i class="fas fa-bolt"></i>Processador (CPU)</h2>
+      <p>A <strong>CPU (Central Processing Unit)</strong> é o coração do computador. Ela executa todas as instruções dos programas, realiza cálculos matemáticos e controla o fluxo de dados entre os outros componentes. A velocidade e eficiência da CPU determinam muito do desempenho geral do sistema.</p>
+      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Cpu-processor.jpg?width=500" alt="Processador CPU" class="hardware-image" style="max-width: 300px;">
+      <div class="specs-grid">
+        <div class="spec-card"><strong>Núcleos</strong><span>Processadores paralelos</span></div>
+        <div class="spec-card"><strong>Frequência</strong><span>GHz (gigahertz)</span></div>
+        <div class="spec-card"><strong>Cache</strong><span>L1, L2, L3</span></div>
+        <div class="spec-card"><strong>TDP</strong><span>Watts (consumo)</span></div>
+      </div>
+      <p><strong>Principais fabricantes:</strong> Intel (Core i3, i5, i7, i9) e AMD (Ryzen 3, 5, 7, 9). Cada geração traz melhorias em eficiência energética, velocidade e número de núcleos.</p>
+    </div>
+  </template>
+
+  <template id="tpl-placa-mae">
+    <div class="content-card">
+      <h2><i class="fas fa-microchip"></i>Placa-mãe (Motherboard)</h2>
+      <p>A <strong>placa-mãe</strong> é a estrutura central que conecta todos os componentes do computador. Ela contém barramentos de comunicação, slots para RAM, encaixe para CPU e diversas portas para periféricos. Toda a comunicação entre componentes passa pela placa-mãe.</p>
+      <img src="https://s2-techtudo.glbimg.com/OB8Tzv_M9miEeUst4xTv7CQMLsg=/0x0:695x449/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_08fbf48bc0524877943fe86e43087e7a/internal_photos/bs/2021/B/4/98j6EuQHqj0ihS2Bz6AA/2014-07-04-5370968516-9ff93aee01-b.jpg" alt="Placa-mãe" class="hardware-image" style="max-width: 300px;">
+      <div class="specs-grid">
+        <div class="spec-card"><strong>Socket</strong><span>Encaixe da CPU</span></div>
+        <div class="spec-card"><strong>Slots RAM</strong><span>Memória</span></div>
+        <div class="spec-card"><strong>Slots PCIe</strong><span>Expansão</span></div>
+        <div class="spec-card"><strong>Chipset</strong><span>Controlador</span></div>
+      </div>
+      <p><strong>Componentes principais:</strong> Socket (encaixe da CPU), slots de RAM, slots PCIe para placas de expansão, chipset (controlador), BIOS/UEFI, conectores de energia e portas traseiras (USB, áudio, rede).</p>
+    </div>
+  </template>
+
+  <template id="tpl-ram">
+    <div class="content-card">
+      <h2><i class="fas fa-memory"></i>Memória RAM</h2>
+      <p><strong>RAM (Random Access Memory)</strong> é a memória de acesso rápido do computador. Ela armazena dados e instruções que estão sendo usados no momento. Diferentemente do armazenamento permanente, a RAM é volátil, seus dados são perdidos quando o computador é desligado.</p>
+      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/RAM_Module_(SDRAM-DDR4).jpg?width=500" alt="Memória RAM" class="hardware-image" style="max-width: 300px;">
+      <div class="specs-grid">
+        <div class="spec-card"><strong>Capacidade</strong><span>GB (gigabytes)</span></div>
+        <div class="spec-card"><strong>Velocidade</strong><span>MHz (megahertz)</span></div>
+        <div class="spec-card"><strong>Tipo</strong><span>DDR4, DDR5</span></div>
+        <div class="spec-card"><strong>Latência</strong><span>CAS Latency</span></div>
+      </div>
+      <p><strong>Gerações modernas:</strong> DDR4 (até 3200 MHz) e DDR5 (até 6400+ MHz). Mais RAM permite executar mais programas simultaneamente. Recomendações: 8GB (básico), 16GB (gamer/profissional), 32GB+ (workstations).</p>
+    </div>
+  </template>
+
+  <template id="tpl-gpu">
+    <div class="content-card">
+      <h2><i class="fas fa-cube"></i>Placa de Vídeo (GPU)</h2>
+      <p>A <strong>GPU (Graphics Processing Unit)</strong> é especializada em processar gráficos e imagens. Ela alivia o processador principal, permitindo melhor desempenho em jogos, edição de vídeo e aplicações gráficas. Pode ser integrada (na CPU) ou dedicada (placa separada).</p>
+      <img src="https://commons.wikimedia.org/wiki/Special:FilePath/ASUS_NVIDIA_GeForce_210_silent_graphics_card_with_HDMI.JPG?width=500" alt="Placa de Vídeo GPU" class="hardware-image" style="max-width: 300px;">
+      <div class="specs-grid">
+        <div class="spec-card"><strong>VRAM</strong><span>Memória de vídeo</span></div>
+        <div class="spec-card"><strong>Núcleos CUDA</strong><span>Processadores</span></div>
+        <div class="spec-card"><strong>Clock</strong><span>Frequência</span></div>
+        <div class="spec-card"><strong>TDP</strong><span>Consumo</span></div>
+      </div>
+      <p><strong>Principais fabricantes:</strong> NVIDIA (GeForce RTX) e AMD (Radeon RX). GPUs modernas também são usadas para IA, mineração de criptomoedas e computação científica, não apenas para gráficos.</p>
+    </div>
+  </template>
+
+  <template id="tpl-armazenamento">
+    <div class="content-card">
+      <h2><i class="fas fa-hdd"></i>Armazenamento (SSD/HDD)</h2>
+      <p>O <strong>armazenamento</strong> é onde todos os seus arquivos, programas e sistema operacional são guardados permanentemente. Existem dois tipos principais: <strong>HDD (disco rígido)</strong> e <strong>SSD (unidade de estado sólido)</strong>.</p>
+      <img src="https://www.alvocomputadores.com.br/wp-content/uploads/2016/09/HD.jpg" alt="Armazenamento" class="hardware-image" style="max-width: 300px;">
+      <div class="info-box">
+        <h4>HDD vs SSD</h4>
+        <ul>
+          <li><strong>HDD:</strong> Mais barato, maior capacidade, mais lento (5400-7200 RPM)</li>
+          <li><strong>SSD:</strong> Mais rápido, sem partes móveis, mais caro, melhor para SO</li>
+          <li><strong>NVMe:</strong> SSD ultra-rápido via PCIe, ideal para gaming e profissionais</li>
+        </ul>
+      </div>
+      <div class="specs-grid">
+        <div class="spec-card"><strong>Capacidade</strong><span>TB (terabytes)</span></div>
+        <div class="spec-card"><strong>Velocidade</strong><span>MB/s (leitura/escrita)</span></div>
+        <div class="spec-card"><strong>Interface</strong><span>SATA, NVMe</span></div>
+        <div class="spec-card"><strong>IOPS</strong><span>Operações/segundo</span></div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-monitor">
+    <div class="content-card">
+      <h2><i class="fas fa-tv"></i>Monitor</h2>
+      <p>O <strong>monitor</strong> é o dispositivo de saída visual do computador. Ele exibe tudo que você vê na tela, desde o sistema operacional até os programas e jogos. A qualidade do monitor afeta diretamente sua experiência de uso.</p>
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStksJ0S6WLBzqF9qZ4F_S5cQnzaqGwvJPg3cujVcEiEmCG0DuoxgLobZg&s=10" alt="Monitor" class="hardware-image" style="max-width: 300px;">
+      <div class="specs-grid">
+        <div class="spec-card"><strong>Resolução</strong><span>1080p, 1440p, 4K</span></div>
+        <div class="spec-card"><strong>Tamanho</strong><span>Polegadas (diagonal)</span></div>
+        <div class="spec-card"><strong>Taxa de Atualização</strong><span>Hz (60, 144, 240)</span></div>
+        <div class="spec-card"><strong>Painel</strong><span>IPS, TN, VA</span></div>
+      </div>
+      <p><strong>Tipos de painel:</strong> IPS (cores precisas), TN (rápido, gamer), VA (contraste). Monitores gaming têm 144Hz+ para suavidade. Profissionais preferem 4K ou múltiplos monitores.</p>
+    </div>
+  </template>
+
+  <template id="tpl-teclado-mouse">
+    <div class="content-card">
+      <h2><i class="fas fa-keyboard"></i>Teclado e Mouse</h2>
+      <p><strong>Teclado</strong> e <strong>mouse</strong> são os principais periféricos de entrada. Eles permitem interagir com o computador. A qualidade e tipo desses dispositivos afetam a produtividade e conforto durante o uso prolongado.</p>
+      <img src="https://images.tcdn.com.br/img/img_prod/1262108/kit_teclado_mecanico_e_mouse_usb_20000dpi_mamba_viper_pro_687_1_2443975498c929883c96396f26b02d54.png" alt="Teclado e Mouse" class="hardware-image" style="max-width: 300px;">
+      <div class="info-box">
+        <h4>Tipos de Teclado</h4>
+        <ul>
+          <li><strong>Mecânico:</strong> Switches individuais, durável, barulhento, caro</li>
+          <li><strong>Membrana:</strong> Mais silencioso, barato, menos durável</li>
+          <li><strong>Chicote:</strong> Intermediário, bom custo-benefício</li>
+        </ul>
+      </div>
+      <div class="info-box">
+        <h4>Tipos de Mouse</h4>
+        <ul>
+          <li><strong>Óptico:</strong> Usa LED, preciso, requer superfície</li>
+          <li><strong>Laser:</strong> Mais preciso, funciona em mais superfícies</li>
+          <li><strong>Trackball:</strong> Alternativa ergonômica</li>
+        </ul>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-fonte">
+    <div class="content-card">
+      <h2><i class="fas fa-plug"></i>Fonte de Alimentação</h2>
+      <p>A <strong>fonte de alimentação (PSU)</strong> converte energia elétrica da tomada em corrente contínua que alimenta todos os componentes do computador. Uma fonte de qualidade é essencial para a estabilidade e longevidade do sistema.</p>
+      <img src="https://media.pichau.com.br/media/catalog/product/cache/2f958555330323e505eba7ce930bdf27/p/s/psu-ga114bu.jpg" alt="Fonte de Alimentação" class="hardware-image" style="max-width: 300px;">
+      <div class="specs-grid">
+        <div class="spec-card"><strong>Potência</strong><span>Watts (W)</span></div>
+        <div class="spec-card"><strong>Eficiência</strong><span>Bronze, Gold, Platinum</span></div>
+        <div class="spec-card"><strong>Modularidade</strong><span>Modular, Semi</span></div>
+        <div class="spec-card"><strong>Certificação</strong><span>80+ Rating</span></div>
+      </div>
+      <p><strong>Dica importante:</strong> Escolha uma fonte com potência 20-30% acima do consumo total. Fontes modulares facilitam a organização dos cabos. Certificação 80+ Gold garante melhor eficiência e economia de energia.</p>
+    </div>
+  </template>
+
+  <template id="tpl-frequencia">
+    <div class="content-card">
+      <h2><i class="fas fa-tachometer-alt"></i>Frequência e Clock</h2>
+      <p><strong>Frequência (Clock)</strong> é a velocidade em que um processador executa instruções, medida em GHz (gigahertz). Quanto maior a frequência, mais instruções podem ser executadas por segundo. No entanto, não é o único fator de desempenho.</p>
+      <div class="code-block">
+        <pre><span class="comment">// Exemplo de frequência</span>
+CPU Base Clock: 3.5 GHz (frequência padrão)
+CPU Boost Clock: 5.0 GHz (frequência máxima)
+Multiplicador: 50x
+BCLK: 100 MHz
+
+Frequência = BCLK × Multiplicador
+5.0 GHz = 100 MHz × 50</pre>
+      </div>
+      <p><strong>Boost Clock:</strong> Muitos processadores aumentam automaticamente a frequência quando necessário, até um limite máximo. Isso oferece melhor desempenho em tarefas exigentes sem aumentar o consumo médio de energia.</p>
+    </div>
+  </template>
+
+  <template id="tpl-nucleos">
+    <div class="content-card">
+      <h2><i class="fas fa-sitemap"></i>Núcleos e Threads</h2>
+      <p><strong>Núcleos</strong> são processadores independentes dentro de uma CPU. <strong>Threads</strong> são linhas de execução que um núcleo pode processar. Um núcleo com hyperthreading pode processar 2 threads simultaneamente.</p>
+      <div class="info-box">
+        <h4>Exemplos de Configuração</h4>
+        <ul>
+          <li><strong>Intel Core i5-13600K:</strong> 6 P-cores + 8 E-cores = 14 cores, 20 threads</li>
+          <li><strong>AMD Ryzen 7 7700X:</strong> 8 cores, 16 threads</li>
+          <li><strong>Intel Core i9-13900K:</strong> 8 P-cores + 16 E-cores = 24 cores, 32 threads</li>
+        </ul>
+      </div>
+      <p><strong>Mais núcleos = melhor multitarefa</strong>, mas cada núcleo adicional tem custo e consumo de energia. Para jogos, 4-6 núcleos são suficientes. Para profissionais, 8+ núcleos são ideais.</p>
+    </div>
+  </template>
+
+  <template id="tpl-cache">
+    <div class="content-card">
+      <h2><i class="fas fa-layer-group"></i>Cache</h2>
+      <p><strong>Cache</strong> é memória ultra-rápida integrada na CPU. Armazena dados frequentemente usados para acesso rápido. Existem três níveis: L1 (mais rápido, menor), L2 (intermediário), L3 (maior, mais lento).</p>
+      <div class="specs-grid">
+        <div class="spec-card"><strong>L1 Cache</strong><span>32-64 KB por núcleo</span></div>
+        <div class="spec-card"><strong>L2 Cache</strong><span>256-512 KB por núcleo</span></div>
+        <div class="spec-card"><strong>L3 Cache</strong><span>8-36 MB compartilhado</span></div>
+        <div class="spec-card"><strong>Velocidade</strong><span>Nanosegundos</span></div>
+      </div>
+      <p><strong>Hierarquia de memória:</strong> L1 (1-4 ciclos) &rarr; L2 (10-20 ciclos) &rarr; L3 (40-75 ciclos) &rarr; RAM (100+ ciclos). Mais cache melhora o desempenho em aplicações que acessam dados repetidamente.</p>
+    </div>
+  </template>
+
+  <template id="tpl-tdp">
+    <div class="content-card">
+      <h2><i class="fas fa-fire"></i>TDP (Consumo de Energia)</h2>
+      <p><strong>TDP (Thermal Design Power)</strong> é a quantidade máxima de calor que um componente pode gerar, medida em Watts. Indica o consumo de energia e ajuda a escolher fonte e cooler adequados.</p>
+      <div class="info-box">
+        <h4>TDP de Processadores Típicos</h4>
+        <ul>
+          <li><strong>Intel Core i5-13600K:</strong> 125W</li>
+          <li><strong>Intel Core i9-13900K:</strong> 253W</li>
+          <li><strong>AMD Ryzen 7 7700X:</strong> 105W</li>
+          <li><strong>AMD Ryzen 9 7950X:</strong> 162W</li>
+        </ul>
+      </div>
+      <p><strong>Importante:</strong> TDP não é consumo real, é o máximo teórico. O consumo real é geralmente 20-30% menor. Processadores com TDP alto precisam de coolers mais potentes e fontes maiores.</p>
+    </div>
+  </template>
+
+  <template id="tpl-nvme">
+    <div class="content-card">
+      <h2><i class="fas fa-bolt"></i>NVMe (Armazenamento Ultra-Rápido)</h2>
+      <p><strong>NVMe (Non-Volatile Memory Express)</strong> é um protocolo de comunicação para SSDs que oferece velocidades muito superiores ao SATA. Conecta-se diretamente ao barramento PCIe da placa-mãe, eliminando gargalos.</p>
+      <div class="specs-grid">
+        <div class="spec-card"><strong>SATA SSD</strong><span>até 550 MB/s</span></div>
+        <div class="spec-card"><strong>NVMe PCIe 3.0</strong><span>até 3500 MB/s</span></div>
+        <div class="spec-card"><strong>NVMe PCIe 4.0</strong><span>até 7000 MB/s</span></div>
+        <div class="spec-card"><strong>NVMe PCIe 5.0</strong><span>até 14000 MB/s</span></div>
+      </div>
+      <p><strong>Vantagens:</strong> Inicialização mais rápida, carregamento de programas instantâneo, transferência de arquivos ultra-rápida. Essencial para gaming moderno e edição de vídeo profissional.</p>
+    </div>
+  </template>
+
+  <template id="tpl-pcie">
+    <div class="content-card">
+      <h2><i class="fas fa-exchange-alt"></i>PCIe (Barramento de Expansão)</h2>
+      <p><strong>PCIe (PCI Express)</strong> é o barramento padrão para conectar periféricos e placas de expansão à placa-mãe. Cada geração oferece o dobro da largura de banda da anterior.</p>
+      <div class="specs-grid">
+        <div class="spec-card"><strong>PCIe 3.0</strong><span>16 GB/s (x16)</span></div>
+        <div class="spec-card"><strong>PCIe 4.0</strong><span>32 GB/s (x16)</span></div>
+        <div class="spec-card"><strong>PCIe 5.0</strong><span>64 GB/s (x16)</span></div>
+        <div class="spec-card"><strong>PCIe 6.0</strong><span>128 GB/s (x16)</span></div>
+      </div>
+      <p><strong>Usos:</strong> Placas de vídeo (GPU), SSDs NVMe, placas de rede, placas de som, adaptadores USB. A maioria das GPUs usa PCIe x16 (16 lanes), enquanto NVMe usa x4.</p>
+    </div>
+  </template>
+
+  <template id="tpl-ddr5">
+    <div class="content-card">
+      <h2><i class="fas fa-memory"></i>DDR5 (Memória de Nova Geração)</h2>
+      <p><strong>DDR5</strong> é a geração mais recente de memória RAM. Oferece maior largura de banda, melhor eficiência energética e suporta velocidades muito mais altas que DDR4.</p>
+      <div class="info-box">
+        <h4>Comparação DDR4 vs DDR5</h4>
+        <ul>
+          <li><strong>DDR4:</strong> até 3200 MHz, 8GB-64GB, 1.2V</li>
+          <li><strong>DDR5:</strong> até 6400+ MHz, 16GB-192GB, 1.1V</li>
+          <li><strong>Largura de banda DDR4:</strong> até 51 GB/s</li>
+          <li><strong>Largura de banda DDR5:</strong> até 102 GB/s</li>
+        </ul>
+      </div>
+      <p><strong>Vantagem:</strong> DDR5 é 2x mais rápida que DDR4, mas o ganho prático em jogos é pequeno (5-10%). Mais importante para profissionais que trabalham com dados em massa.</p>
+    </div>
+  </template>
+
+  <template id="tpl-dicas">
+    <div class="content-card">
+      <h2><i class="fas fa-lightbulb"></i>Dicas Práticas</h2>
+      <div class="info-box">
+        <h4>Escolhendo um Computador</h4>
+        <ul>
+          <li>Defina seu orçamento e necessidade (gaming, trabalho, básico)</li>
+          <li>Processador e GPU são as prioridades principais</li>
+          <li>Mínimo 16GB RAM para uso moderno</li>
+          <li>SSD NVMe é essencial para desempenho</li>
+          <li>Não economize na fonte de alimentação</li>
+        </ul>
+      </div>
+      <div class="info-box">
+        <h4>Manutenção do Hardware</h4>
+        <ul>
+          <li>Limpe o pó do gabinete a cada 3-6 meses</li>
+          <li>Verifique temperaturas regularmente (CPU &lt;80°C, GPU &lt;85°C)</li>
+          <li>Mantenha ventilação adequada ao redor do computador</li>
+          <li>Atualize drivers regularmente</li>
+          <li>Faça backup de dados importantes</li>
+        </ul>
+      </div>
+      <div class="info-box">
+        <h4>Upgrade de Hardware</h4>
+        <ul>
+          <li>RAM é o upgrade mais fácil e barato</li>
+          <li>Trocar HDD por SSD melhora muito o desempenho</li>
+          <li>GPU é importante para gaming e gráficos</li>
+          <li>CPU é mais difícil de trocar (requer placa-mãe nova)</li>
+          <li>Verifique compatibilidade antes de comprar</li>
+        </ul>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-glossario">
+    <div class="content-card">
+      <h2><i class="fas fa-book"></i>Glossário de Termos</h2>
+      <div class="term-block">
+        <h4>BIOS/UEFI</h4>
+        <p>Sistema de firmware que inicializa o computador antes do sistema operacional carregar.</p>
+      </div>
+      <div class="term-block">
+        <h4>Overclocking</h4>
+        <p>Aumentar a frequência de um componente além de suas especificações para melhor desempenho (requer resfriamento extra).</p>
+      </div>
+      <div class="term-block">
+        <h4>Throttling</h4>
+        <p>Redução automática de frequência para evitar superaquecimento.</p>
+      </div>
+      <div class="term-block">
+        <h4>VRAM</h4>
+        <p>Memória dedicada da placa de vídeo para armazenar texturas e dados gráficos.</p>
+      </div>
+      <div class="term-block">
+        <h4>Latência</h4>
+        <p>Tempo de espera para acessar dados. Menor latência = melhor desempenho.</p>
+      </div>
+      <div class="term-block">
+        <h4>Bandwidth</h4>
+        <p>Quantidade máxima de dados que podem ser transferidos por segundo (medida em MB/s ou GB/s).</p>
+      </div>
+      <div class="term-block">
+        <h4>IOPS</h4>
+        <p>Input/Output Operations Per Second, número de operações de leitura/escrita por segundo.</p>
+      </div>
+      <div class="term-block">
+        <h4>Chipset</h4>
+        <p>Controlador que gerencia comunicação entre CPU, RAM, armazenamento e periféricos.</p>
+      </div>
+      <div class="term-block">
+        <h4>Heatsink</h4>
+        <p>Dissipador de calor que remove calor de componentes quentes (CPU, GPU).</p>
+      </div>
+      <div class="term-block">
+        <h4>Thermal Paste</h4>
+        <p>Pasta térmica que melhora a transferência de calor entre o processador e o cooler.</p>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    const templates = {
+      "introducao":     "tpl-introducao",
+      "componentes":    "tpl-cpu",
+      "cpu":            "tpl-cpu",
+      "placa-mae":      "tpl-placa-mae",
+      "ram":            "tpl-ram",
+      "gpu":            "tpl-gpu",
+      "armazenamento":  "tpl-armazenamento",
+      "perifericos":    "tpl-monitor",
+      "monitor":        "tpl-monitor",
+      "teclado-mouse":  "tpl-teclado-mouse",
+      "fonte":          "tpl-fonte",
+      "conceitos":      "tpl-frequencia",
+      "frequencia":     "tpl-frequencia",
+      "nucleos":        "tpl-nucleos",
+      "cache":          "tpl-cache",
+      "tdp":            "tpl-tdp",
+      "tecnologias":    "tpl-nvme",
+      "nvme":           "tpl-nvme",
+      "pcie":           "tpl-pcie",
+      "ddr5":           "tpl-ddr5",
+      "dicas":          "tpl-dicas",
+      "glossario":      "tpl-glossario",
+    };
+
+    function loadSection(sectionId) {
+      const tplId = templates[sectionId];
+      if (!tplId) return;
+      const tpl = document.getElementById(tplId);
+      if (!tpl) return;
+      const el = document.getElementById("explanation");
+      el.innerHTML = "";
+      el.appendChild(tpl.content.cloneNode(true));
+      localStorage.setItem("activeSectionId", sectionId);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function initDropdowns(container) {
+      container.querySelectorAll(".dropdown-btn").forEach((button) => {
+        button.addEventListener("click", (e) => {
+          e.preventDefault();
+          const dropdownContent = button.nextElementSibling;
+          const icon = button.querySelector("i:last-child");
+
+          dropdownContent.classList.toggle("open");
+          icon.classList.toggle("rotate-90");
+
+          container.querySelectorAll(".dropdown-content").forEach((content) => {
+            if (content !== dropdownContent && content.classList.contains("open")) {
+              content.classList.remove("open");
+              content.previousElementSibling
+                .querySelector("i:last-child")
+                .classList.remove("rotate-90");
+            }
+          });
+          const section = button.getAttribute("data-section");
+          if (section) loadSection(section);
+        });
+      });
+    }
+
+    function initNavLinks(container) {
+      container.querySelectorAll(".nav-link").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const section = link.getAttribute("data-section");
+          if (section) {
+            loadSection(section);
+            document.getElementById("mobile-drawer").classList.remove("open");
+            document.getElementById("mobile-overlay").classList.remove("open");
+          }
+        });
+      });
+    }
+
+    const hamburger = document.getElementById("hamburger-btn");
+    const drawer = document.getElementById("mobile-drawer");
+    const overlay = document.getElementById("mobile-overlay");
+    const closeBtn = document.getElementById("close-drawer");
+    const mobileNavContainer = document.getElementById("mobile-nav-container");
+
+    hamburger.addEventListener("click", () => {
+      if (mobileNavContainer.innerHTML.trim() === "") {
+        const navClone = document.getElementById("main-nav").cloneNode(true);
+        navClone.id = "mobile-nav";
+        mobileNavContainer.appendChild(navClone);
+        initDropdowns(mobileNavContainer);
+        initNavLinks(mobileNavContainer);
+      }
+      drawer.classList.add("open");
+      overlay.classList.add("open");
+    });
+
+    const closeDrawer = () => {
+      drawer.classList.remove("open");
+      overlay.classList.remove("open");
+    };
+
+    closeBtn.addEventListener("click", closeDrawer);
+    overlay.addEventListener("click", closeDrawer);
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const input = document.querySelector('input[type="text"]');
+      const resultsContainer = document.getElementById("search-results");
+
+      input.addEventListener("input", () => {
+        const query = input.value.toLowerCase().trim();
+        resultsContainer.innerHTML = "";
+
+        if (query.length < 2) {
+          resultsContainer.classList.add("hidden");
+          return;
+        }
+
+        const links = document.querySelectorAll("#main-nav .nav-link");
+        const matches = [];
+
+        links.forEach((link) => {
+          const text = link.textContent.toLowerCase().trim();
+          const explanation = link.getAttribute("data-explanation") || "";
+          if (text.includes(query) || explanation.toLowerCase().includes(query)) {
+            matches.push({ element: link, text: link.textContent.trim() });
+          }
+        });
+
+        if (matches.length === 0) {
+          resultsContainer.innerHTML = "<p class='p-2 text-gray-500'>Nenhum resultado encontrado.</p>";
+        } else {
+          matches.forEach((match) => {
+            const item = document.createElement("div");
+            item.className = "px-4 py-2 hover:bg-green-100 cursor-pointer text-green-700 text-sm";
+            item.innerText = match.text;
+            item.addEventListener("click", () => {
+              match.element.click();
+              resultsContainer.classList.add("hidden");
+              input.value = "";
+            });
+            resultsContainer.appendChild(item);
+          });
+        }
+
+        resultsContainer.classList.remove("hidden");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!input.contains(e.target) && !resultsContainer.contains(e.target)) {
+          resultsContainer.classList.add("hidden");
+        }
+      });
+
+      initDropdowns(document.getElementById("sidebar"));
+      initNavLinks(document.getElementById("sidebar"));
+
+      const lastSection = localStorage.getItem("activeSectionId");
+      const sectionToLoad = lastSection && templates[lastSection] ? lastSection : "introducao";
+
+      const parentDropdownMap = {
+        "cpu": "dd-componentes", "placa-mae": "dd-componentes", "ram": "dd-componentes",
+        "gpu": "dd-componentes", "armazenamento": "dd-componentes",
+        "monitor": "dd-perifericos", "teclado-mouse": "dd-perifericos", "fonte": "dd-perifericos",
+        "frequencia": "dd-conceitos", "nucleos": "dd-conceitos", "cache": "dd-conceitos", "tdp": "dd-conceitos",
+        "nvme": "dd-tecnologias", "pcie": "dd-tecnologias", "ddr5": "dd-tecnologias",
+      };
+      const parentId = parentDropdownMap[sectionToLoad];
+      if (parentId) {
+        const dd = document.getElementById(parentId);
+        if (dd) {
+          dd.classList.add("open");
+          const btn = dd.previousElementSibling;
+          if (btn) btn.querySelector("i:last-child")?.classList.add("rotate-90");
+        }
+      }
+      loadSection(sectionToLoad);
+    });
+  </script>
+</body>
+</html>
