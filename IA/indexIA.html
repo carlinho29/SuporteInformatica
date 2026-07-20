@@ -1,1 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Introdução à IA: Referência de Inteligência Artificial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    /* Estilos herdados do site de referência */
+    :root {
+      --bg-primary: #0a0a0a;
+      --bg-secondary: #141414;
+      --bg-card: #1a1a1a;
+      --bg-card-hover: #222222;
+      --bg-sidebar: #111111;
+      --bg-dropdown: #181818;
+      --text-primary: #f5f5f5;
+      --text-secondary: #a0a0a0;
+      --text-muted: #666666;
+      --accent: #00a651;
+      --accent-hover: #00c45f;
+      --accent-dim: rgba(0, 166, 81, 0.12);
+      --border: #2a2a2a;
+      --border-hover: #333333;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: all 0.25s ease;
+    }
 
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ─── Topbar ─── */
+    .topbar {
+      background: linear-gradient(180deg, #111111 0%, var(--bg-primary) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+    }
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+    }
+    .topbar a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+    .topbar a:hover { color: var(--accent-hover); }
+
+    /* ─── Header ─── */
+    .brand-header {
+      background: linear-gradient(180deg, #111111 0%, var(--bg-primary) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 1.25rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: blur(12px);
+    }
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .header-title-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .brand-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .brand-header i { color: var(--accent); font-size: 1.6rem; }
+
+    /* ─── Search ─── */
+    .search-wrapper { position: relative; }
+    .search-input {
+      padding: 0.6rem 2.5rem 0.6rem 1rem;
+      border-radius: 100px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      width: 220px;
+      transition: var(--transition);
+    }
+    .search-input::placeholder { color: var(--text-muted); }
+    .search-input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-dim);
+    }
+    .search-btn {
+      position: absolute;
+      right: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    /* ─── Hamburger ─── */
+    #hamburger-btn {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: var(--transition);
+    }
+    #hamburger-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* ─── Layout ─── */
+    main { flex: 1; }
+    .main-layout {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem;
+      display: flex;
+      gap: 2rem;
+    }
+
+    /* ─── Sidebar ─── */
+    #sidebar {
+      width: 280px;
+      flex-shrink: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      height: fit-content;
+      position: sticky;
+      top: 100px;
+      box-shadow: var(--shadow-sm);
+    }
+    .sidebar-header {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .sidebar-header h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+    #main-nav { padding: 0.75rem; }
+
+    /* ─── Nav Items ─── */
+    .nav-section { margin-bottom: 0.5rem; }
+    .nav-link, .dropdown-btn {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.7rem 0.9rem;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+    }
+    .nav-link:hover, .dropdown-btn:hover {
+      background: var(--accent-dim);
+      color: var(--accent-hover);
+    }
+    .nav-link i, .dropdown-btn i { width: 18px; text-align: center; }
+    .dropdown-btn i:last-child {
+      position: absolute;
+      right: 0.75rem;
+      font-size: 0.7rem;
+      transition: transform 0.3s ease;
+    }
+    .dropdown-btn i.rotate-90 { transform: rotate(90deg); }
+
+    .dropdown-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-out;
+      padding-left: 0.5rem;
+    }
+    .dropdown-content.open { max-height: 1000px; }
+    .dropdown-content .nav-link {
+      font-size: 0.85rem;
+      padding: 0.55rem 0.9rem;
+      margin-bottom: 0.15rem;
+    }
+
+    /* ─── Content Area ─── */
+    #content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* ─── Content Cards ─── */
+    .content-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .content-card:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--shadow);
+    }
+    .content-card h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .content-card h2 i { color: var(--accent); font-size: 1.3rem; }
+    .content-card p {
+      color: var(--text-secondary);
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+    }
+    .content-card strong { color: var(--text-primary); }
+    .content-card code {
+      background: var(--bg-secondary);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85em;
+      color: var(--accent-hover);
+      border: 1px solid var(--border);
+    }
+
+    /* ─── Grid ─── */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .grid-item {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 1rem;
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+    .grid-item:hover { border-color: var(--accent); }
+    .grid-item strong { color: var(--accent); }
+
+    /* ─── Footer ─── */
+    footer {
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+      padding: 2.5rem 1.25rem;
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .footer-divider {
+      width: 60px;
+      height: 2px;
+      background: var(--accent);
+      margin: 0 auto 1rem;
+      border-radius: 1px;
+      opacity: 0.6;
+    }
+    footer p { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 0.5rem; }
+    footer .credits { font-weight: 600; color: var(--text-primary); }
+    footer a { color: var(--accent); text-decoration: none; transition: color 0.2s ease; }
+    footer a:hover { color: var(--accent-hover); }
+    .institution { font-size: 0.78rem !important; color: var(--text-muted) !important; margin-top: 0.75rem; }
+
+    @media (max-width: 900px) {
+      #sidebar { display: none; }
+      #hamburger-btn { display: block; }
+      .main-layout { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <span>INTRODUÇÃO À IA</span>
+      <a href="#">
+        <i class="fas fa-home mr-1"></i> Portal de Aprendizado
+      </a>
+    </div>
+  </div>
+
+  <header class="brand-header">
+    <div class="header-container">
+      <div class="header-title-wrapper">
+        <button id="hamburger-btn">
+          <i class="fas fa-bars"></i>
+        </button>
+        <i class="fas fa-brain text-3xl"></i>
+        <h1>Referência de Inteligência Artificial</h1>
+      </div>
+      <div class="search-wrapper">
+        <input type="text" placeholder="Pesquisar" class="search-input" />
+        <button class="search-btn"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="main-layout">
+      <div id="sidebar">
+        <div class="sidebar-header">
+          <h1>Sumário</h1>
+        </div>
+        <nav id="main-nav">
+          <div class="nav-section">
+            <a href="#" class="nav-link" data-section="teoria">
+              <i class="fas fa-book"></i>
+              <span>Teoria Geral</span>
+            </a>
+          </div>
+
+          <div class="nav-section">
+            <a href="#" class="dropdown-btn">
+              <i class="fas fa-robot"></i>
+              <span>Principais Modelos</span>
+              <i class="fas fa-chevron-right"></i>
+            </a>
+            <div id="dd-modelos" class="dropdown-content">
+              <a href="#" class="nav-link" data-section="chatgpt">ChatGPT</a>
+              <a href="#" class="nav-link" data-section="claude">Claude</a>
+              <a href="#" class="nav-link" data-section="gemini">Gemini</a>
+              <a href="#" class="nav-link" data-section="grok">Grok</a>
+              <a href="#" class="nav-link" data-section="kimi">Kimi</a>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <div id="content">
+        <div id="explanation">
+          </div>
+
+        <footer>
+          <div class="footer-content">
+            <div class="footer-divider"></div>
+            <p>© 2026 Referência de Inteligência Artificial. Todos os direitos reservados.</p>
+            <p>Desenvlvido por David Carlos Miranda Delgado.</p>
+            <p>IFSULDEMINAS - CAMPUS POÇOS DE Caldas</p>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </main>
+
+  <template id="tpl-teoria">
+    <div class="content-card">
+      <h2><i class="fas fa-brain"></i> Teoria Geral da IA</h2>
+      <p>A Inteligência Artificial (IA) refere-se a sistemas ou máquinas que mimetizam a inteligência humana para realizar tarefas e podem se aprimorar iterativamente com base nas informações que coletam. Não se trata de uma única tecnologia, mas de um campo vasto da ciência da computação.</p>
+      <p>Atualmente, o maior foco está na <strong>IA Generativa</strong> e nos <strong>Grandes Modelos de Linguagem (LLMs)</strong>, que são treinados com volumes massivos de dados textuais para gerar conteúdo novo e coerente, responder perguntas e realizar tarefas complexas de raciocínio.</p>
+      <div class="grid-2">
+        <div class="grid-item"><strong>Machine Learning:</strong> Algoritmos que aprendem padrões a partir de dados.</div>
+        <div class="grid-item"><strong>Deep Learning:</strong> Redes neurais profundas inspiradas no cérebro humano.</div>
+        <div class="grid-item"><strong>NLP:</strong> Processamento de Linguagem Natural (compreensão de texto/fala).</div>
+        <div class="grid-item"><strong>Visão Computacional:</strong> Capacidade de "ver" e interpretar imagens.</div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-chatgpt">
+    <div class="content-card">
+      <h2><i class="fas fa-comments"></i> ChatGPT</h2>
+      <p>Desenvolvido pela <strong>OpenAI</strong>, o ChatGPT foi o principal catalisador da atual onda de IA generativa. Baseado na arquitetura GPT (Generative Pre-trained Transformer), ele evoluiu de um modelo focado em texto (GPT-3.5) para um sistema multimodal avançado (GPT-4 e GPT-4o).</p>
+      <div class="grid-2">
+        <div class="grid-item"><strong>Criador:</strong> OpenAI.</div>
+        <div class="grid-item"><strong>Destaque:</strong> Versatilidade, raciocínio lógico avançado, capacidades de programação.</div>
+        <div class="grid-item"><strong>Multimodalidade:</strong> Entende e gera texto, áudio e imagens.</div>
+        <div class="grid-item"><strong>Modelos Atuais:</strong> GPT-4o, GPT-4.</div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-claude">
+    <div class="content-card">
+      <h2><i class="fas fa-shield-alt"></i> Claude</h2>
+      <p>Criado pela <strong>Anthropic</strong>, o Claude é conhecido por seu foco na segurança da IA e na "IA Constitucional", um método de treinamento projetado para alinhar o modelo com valores humanos. Ele se destaca pela fluidez de escrita e pela capacidade de processar contextos extremamente longos.</p>
+      <div class="grid-2">
+        <div class="grid-item"><strong>Criador:</strong> Anthropic.</div>
+        <div class="grid-item"><strong>Destaque:</strong> Escrita natural, resumo de documentos longos, segurança e alinhamento.</div>
+        <div class="grid-item"><strong>Janela de Contexto:</strong> 200k tokens.</div>
+        <div class="grid-item"><strong>Família de Modelos:</strong> Claude Sonnet 5, Claude Opus 4.8, Claude Fable 5, Claude Haiku 4.5.</div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-gemini">
+    <div class="content-card">
+      <h2><i class="fas fa-google"></i> Gemini</h2>
+      <p>O Gemini é a família de modelos mais avançada do <strong>Google</strong> (desenvolvida pela Google DeepMind). Ele foi construído do zero para ser nativamente multimodal, o que significa que ele pode compreender e raciocinar sobre diferentes tipos de informação, incluindo texto, imagens, áudio, vídeo e código, simultaneamente.</p>
+      <div class="grid-2">
+        <div class="grid-item"><strong>Criador:</strong> Google (DeepMind).</div>
+        <div class="grid-item"><strong>Destaque:</strong> Multimodalidade nativa profunda, janelas de contexto massivas (1M+ tokens).</div>
+        <div class="grid-item"><strong>Integração:</strong> Profundamente integrado ao ecossistema Google (Workspace, Search).</div>
+        <div class="grid-item"><strong>Versões:</strong> Gemini Omni, Gemini 3.5 Pro, Gemini 3.5 Flash.</div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-grok">
+    <div class="content-card">
+      <h2><i class="fas fa-ghost"></i> Grok</h2>
+      <p>Desenvolvido pela <strong>xAI</strong> (empresa de Elon Musk), o Grok é um assistente de IA integrado diretamente à plataforma X (antigo Twitter). Ele foi projetado para responder perguntas com um pouco de inteligência e tem uma "veia rebelde", além de ter acesso em tempo real aos dados da rede social X.</p>
+      <div class="grid-2">
+        <div class="grid-item"><strong>Criador:</strong> xAI.</div>
+        <div class="grid-item"><strong>Destaque:</strong> Acesso a dados em tempo real do X, respostas menos censuradas (segundo a xAI).</div>
+        <div class="grid-item"><strong>Modelos Atuais:</strong> Grok-4.5</div>
+        <div class="grid-item"><strong>Disponibilidade:</strong> Usuários Premium no X.</div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-kimi">
+    <div class="content-card">
+      <h2><i class="fas fa-moon"></i> Kimi</h2>
+      <p>Desenvolvido pela startup chinesa <strong>Moonshot AI</strong>, o Kimi é um assistente de IA que ganhou destaque por sua impressionante capacidade de processamento de contexto longo. Ele é projetado para lidar com pesquisas complexas e análise de documentos extensos.</p>
+      <div class="grid-2">
+        <div class="grid-item"><strong>Criador:</strong> Moonshot AI.</div>
+        <div class="grid-item"><strong>Destaque:</strong> Processamento de janelas de contexto extremamente longas (inicialmente 200k, expandindo para 2M de tokens). Atualmente, temos o modelo K3.</div>
+        <div class="grid-item"><strong>Foco:</strong> Pesquisa, síntese de documentos e análise de dados longos. Trabalha com 2.8 trilhões de parâmetros.</div>
+        <div class="grid-item"><strong>Região:</strong> Altamente popular na China.</div>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    const templates = {
+      "teoria": "tpl-teoria",
+      "chatgpt": "tpl-chatgpt",
+      "claude": "tpl-claude",
+      "gemini": "tpl-gemini",
+      "grok": "tpl-grok",
+      "kimi": "tpl-kimi"
+    };
+
+    function loadSection(sectionId) {
+      const tplId = templates[sectionId];
+      if (!tplId) return;
+      const tpl = document.getElementById(tplId);
+      if (!tpl) return;
+      const el = document.getElementById("explanation");
+      el.innerHTML = "";
+      el.appendChild(tpl.content.cloneNode(true));
+    }
+
+    document.querySelectorAll(".nav-link").forEach((link) => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const section = link.getAttribute("data-section");
+        if (section) loadSection(section);
+      });
+    });
+
+    document.querySelectorAll(".dropdown-btn").forEach((button) => {
+      button.addEventListener("click", (e) => {
+        e.preventDefault();
+        const dropdownContent = button.nextElementSibling;
+        const icon = button.querySelector("i:last-child");
+        dropdownContent.classList.toggle("open");
+        icon.classList.toggle("rotate-90");
+      });
+    });
+
+    loadSection("teoria");
+  </script>
+</body>
+</html>
