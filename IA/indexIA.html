@@ -9,7 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    /* Estilos herdados do site de referência */
     :root {
       --bg-primary: #0a0a0a;
       --bg-secondary: #141414;
@@ -64,7 +63,6 @@
     }
     .topbar a:hover { color: var(--accent-hover); }
 
-    /* ─── Header ─── */
     .brand-header {
       background: linear-gradient(180deg, #111111 0%, var(--bg-primary) 100%);
       border-bottom: 1px solid var(--border);
@@ -94,7 +92,6 @@
     }
     .brand-header i { color: var(--accent); font-size: 1.6rem; }
 
-    /* ─── Search ─── */
     .search-wrapper { position: relative; }
     .search-input {
       padding: 0.6rem 2.5rem 0.6rem 1rem;
@@ -123,8 +120,6 @@
       cursor: pointer;
       font-size: 0.9rem;
     }
-
-    /* ─── Hamburger ─── */
     #hamburger-btn {
       display: none;
       background: var(--bg-card);
@@ -138,7 +133,6 @@
     }
     #hamburger-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-    /* ─── Layout ─── */
     main { flex: 1; }
     .main-layout {
       max-width: 1200px;
@@ -148,7 +142,6 @@
       gap: 2rem;
     }
 
-    /* ─── Sidebar ─── */
     #sidebar {
       width: 280px;
       flex-shrink: 0;
@@ -172,7 +165,6 @@
     }
     #main-nav { padding: 0.75rem; }
 
-    /* ─── Nav Items ─── */
     .nav-section { margin-bottom: 0.5rem; }
     .nav-link, .dropdown-btn {
       display: flex;
@@ -214,13 +206,11 @@
       margin-bottom: 0.15rem;
     }
 
-    /* ─── Content Area ─── */
     #content {
       flex: 1;
       min-width: 0;
     }
 
-    /* ─── Content Cards ─── */
     .content-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -260,7 +250,6 @@
       border: 1px solid var(--border);
     }
 
-    /* ─── Grid ─── */
     .grid-2 {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -279,7 +268,6 @@
     .grid-item:hover { border-color: var(--accent); }
     .grid-item strong { color: var(--accent); }
 
-    /* ─── Footer ─── */
     footer {
       background: var(--bg-secondary);
       border-top: 1px solid var(--border);
@@ -316,7 +304,7 @@
   <div class="topbar">
     <div class="topbar-inner">
       <span>INTRODUÇÃO À IA</span>
-      <a href="#">
+      <a href="../index.html">
         <i class="fas fa-home mr-1"></i> Portal de Aprendizado
       </a>
     </div>
